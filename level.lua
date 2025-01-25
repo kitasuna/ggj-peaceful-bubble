@@ -1,36 +1,55 @@
 function level()
+
   return {
     last_ts = time(),
-    emitter = new_emitter(),
+    emitters = {
+      new_emitter(64, -10),
+      new_emitter(64, 138)
+    },
     hero = player(bcirc(v2(0,64),5)),
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
-      self.emitter:update(dt)
       self.hero:update(dt)
 
-      if(btnp(0)) then
-        self.emitter.cooldown += 0.1
-      elseif(btnp(1)) then
-        self.emitter.cooldown -= 0.1
-      elseif(btnp(2)) then
-        self.emitter.bullcount += 1
-      elseif(btnp(3)) then
-        self.emitter.bullcount -= 1
-      end
+      foreach(self.emitters, function(e)
+        e:update(dt)
+      end)
 
-      local collisions = collision(self.hero.bounds, self.emitter.bulls)
+      --[[
+      if(btnp(0)) then
+        emitter.cooldown += 0.1
+      elseif(btnp(1)) then
+        emitter.cooldown -= 0.1
+      elseif(btnp(2)) then
+        emitter.bullcount += 1
+      elseif(btnp(3)) then
+        emitter.bullcount -= 1
+      end
+      ]]--
+
+      local allbulls = {}
+      foreach(self.emitters, function(e)
+        foreach(e.bulls, function(b)
+          add(allbulls, b)
+          end
+        )
+      end)
+
+      local collisions = collision(self.hero.bounds, allbulls)
       if #collisions > 0 then
         self.hero:die()
         return "dead"
       end
-      
+
       return ""  -- continue
     end,
     draw = function(self)
       cls()
       -- print("Hello World", 64, 64, 12)
-      self.emitter:draw()
+      foreach(self.emitters, function(e)
+        e:draw(dt)
+      end)
       -- draw hero
       self.hero:draw()
     end,

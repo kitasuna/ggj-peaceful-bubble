@@ -1,12 +1,12 @@
 -- Requires bcirc, vector2.
 
-function new_emitter()
+function new_emitter(x, y)
   local e = {
-    x=64,
-    y=64,
+    x=x,
+    y=y,
     rot = 90,
-    bullcount = 5,
-    cooldown = 0.6,
+    bullcount = 2,
+    cooldown = 0.8,
     draw = function(e)
       -- circfill(e.x,e.y,3,11)
       for i, b in pairs(e.bulls) do
@@ -28,25 +28,20 @@ function new_emitter()
   e.timer = new_timer(
     0,
     function(t)
-      printh("timer expired")
-      if #e.bulls > 0 then
-        printh("has bullets: ".. #e.bulls)
-        -- return
-      end
       local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
       end)
 
-      e.rot = (e.rot + 15)  % 360
+      e.rot = (e.rot + 45)  % 360
       t:add(e.cooldown)
     end
     )
 
     e.timer:init(e.cooldown, 0)
 
-    e.bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
+    e.bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, waves)
   -- change the max of the for loop to make more bullets in one spawn
     return e
 end
@@ -54,6 +49,10 @@ end
 -- call this guy in a loop and pass the loop index
 function bendy(angle, idx)
   return angle + (idx^4)
+end
+
+function waves(angle, idx)
+  return angle + (15*idx)
 end
 
 function new_bullets(count, start_x, start_y, base_angle, rot_f)
@@ -69,8 +68,6 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
     local sinof, cosof = sin(angle/360), cos(angle/360)
     -- change the constant here to change spawning distance from emitter
     local bull = {
-      -- x=start_x + 5 * cosof,
-      -- y=start_y + 5 * sinof,
       dx=1*cosof,
       dy=1*sinof,
       draw=function(b)
