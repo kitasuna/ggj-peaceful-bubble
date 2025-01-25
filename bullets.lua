@@ -88,7 +88,8 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
       dx=1*cosof,
       dy=1*sinof,
       draw=function(b)
-        circfill(b.pos.x,b.pos.y,b.radius,12)
+        -- circfill(b.pos.x,b.pos.y,b.radius,12)
+        spr(4, b.pos.x, b.pos.y)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx
@@ -123,7 +124,8 @@ function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
       dx=velx,
       dy=vely,
       draw=function(b)
-        circfill(b.pos.x,b.pos.y,b.radius,12)
+        -- circfill(b.pos.x,b.pos.y,b.radius,12)
+        spr(4, b.pos.x, b.pos.y)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx
