@@ -21,14 +21,14 @@ function new_emitter(x, y, dx, dy, bullet_f)
       end
       pal()
     end,
-    update = function(self, dt)
+    update = function(self, dt, level)
       for i, b in pairs(self.bulls) do
         b:update(dt) 
         if b.pos.x > 136 or b.pos.x < -8 or b.pos.y > 136 or b.pos.y < -8 then
           del(self.bulls, b)
         end
       end
-      self.timer:update(time(), hero)
+      self.timer:update(time(), level.hero)
       self.cycler:update(dt)
 
       self.x += self.dx
@@ -45,7 +45,7 @@ function new_emitter(x, y, dx, dy, bullet_f)
 
   e.timer = new_timer(
     0,
-    function(t,hero)
+    function(t,now,hero)
       printh("emitter timer expired")
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
       local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, hero.bounds.pos.x, hero.bounds.pos.y)
@@ -166,7 +166,7 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t:f(hero)
+        t:f(now, hero)
       end
     end,
   }
