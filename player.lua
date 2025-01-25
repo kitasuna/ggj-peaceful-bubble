@@ -12,7 +12,7 @@ function player(bounds)
       local up = 2
       local down = 3
 
-      if self.bounds != nil then
+      if self.bounds.pos != nil then
         self.prevx = self.bounds.pos.x
         self.prevy = self.bounds.pos.y
       end
@@ -31,7 +31,7 @@ function player(bounds)
     end,
     draw=function(self)
       -- circfill(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius, 12)
-      if (self.prevx != self.bounds.pos.x or self.prevy != self.bounds.pos.y) then
+      if (self.prevx != self.bounds.pos.x or self.prevy != self.bounds.pos.y) and (self.prevx != nil and self.prevy != nil) then
         if rnd() > 0.5 then
           circ(self.prevx+4, self.prevy+4, 4, 7)
         end
