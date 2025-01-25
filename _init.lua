@@ -1,6 +1,11 @@
 function _init()
   last_ts = time()
-  emitter = new_emitter()
+  emitters = {
+    new_emitter(64, -10),
+    new_emitter(64, 138)
+  }
+  -- emitter = new_emitter(64, -10)
+  -- emitter1 = new_emitter(64, 138)
 
   hero = player(bcirc(v2(0,64),5))
 
