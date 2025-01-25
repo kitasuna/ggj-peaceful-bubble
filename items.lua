@@ -15,15 +15,9 @@ function new_item(posvec)
   return merge(item, posvec)
 end
 
-function items(level)
-  local items = {
-    -- level 1
-    {
-      new_item(bcirc(v2(64,64), 5)),
-      new_item(bcirc(v2(120,16), 5)),
-      new_item(bcirc(v2(16,96), 5)),
-    },
-    -- add more below this...
+function items()
+  return {
+      new_item(bcirc(v2(112,112), 5)),
+      new_item(bcirc(v2(32,32), 5)),
   }
-  return items[level]
 end

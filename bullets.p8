@@ -20,6 +20,7 @@ poke(0x5f2e,1)
 #include collision.lua
 #include bullets.lua
 #include items.lua
+#include emitters.lua
 #include player.lua
 #include floating_bubble.lua
 

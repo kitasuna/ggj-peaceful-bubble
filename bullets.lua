@@ -1,6 +1,6 @@
 -- Requires bcirc, vector2.
 
-function new_emitter(x, y, dx, dy, bullet_f)
+function new_emitter(x, y, dx, dy, bullcount, cooldown, bullet_f)
   local e = {
     x=x,
     y=y,
@@ -8,8 +8,8 @@ function new_emitter(x, y, dx, dy, bullet_f)
     dy=dy,
     cycler = new_cycler(0.1, {2,3,4,5}),
     rot = 90,
-    bullcount = 2,
-    cooldown = 0.6,
+    bullcount = bullcount,
+    cooldown = cooldown,
     draw = function(self)
       -- circfill(e.x,e.y,3,11)
       local colors = {2,4,5}
@@ -28,7 +28,7 @@ function new_emitter(x, y, dx, dy, bullet_f)
           del(self.bulls, b)
         end
       end
-      self.timer:update(time(), level.hero)
+      self.timer:update(time(), level)
       self.cycler:update(dt)
 
       self.x += self.dx
@@ -45,9 +45,10 @@ function new_emitter(x, y, dx, dy, bullet_f)
 
   e.timer = new_timer(
     0,
-    function(t,now,hero)
+    0,
+    function(t,now,level)
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
-      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, hero.bounds.pos.x, hero.bounds.pos.y)
+      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, level.hero.bounds.pos.x, level.hero.bounds.pos.y)
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
@@ -58,13 +59,8 @@ function new_emitter(x, y, dx, dy, bullet_f)
     end
     )
 
-    e.timer:init(e.cooldown, 0)
+    e.timer:init(1.5, time())
 
-    e.bulls = new_bullets(e.bullcount,
-      e.x,
-      e.y,
-      e.rot,
-      waves)
     return e
 end
 
@@ -139,9 +135,9 @@ function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
   return bulls
 end
 
-function new_timer(now, f)
+function new_timer(now, init_ttl, f)
   return {
-    ttl = 0,
+    ttl = init_ttl,
     last_t = now,
     f = f,
     init = function(t, ttl, last_t)
@@ -152,7 +148,7 @@ function new_timer(now, f)
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
-    update = function(t, now, hero)
+    update = function(t, now, level)
       if t.ttl == 0 then
         return
       end
@@ -160,7 +156,7 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t:f(now, hero)
+        t:f(now, level)
       end
     end,
   }

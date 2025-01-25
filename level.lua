@@ -1,20 +1,30 @@
 -- level(nxt)
 -- * nxt : callback - call to end the level pass control to the next scene
 function level(nxt)
+  local items = items(1)
   return {
     last_ts = time(),
-    emitters = {
-      new_emitter(120, 64, 0, 0.4),
-      new_emitter(64, 120, -0.4, 0),
-    },
+    phase = 1,
+    emitters = {},
     -- figure we'll pass the level/screen index here and for emitters (eventually)
-    items = items(1),
-    hero = player(v2(0,64)),
+    hero = player(v2(64,64)),
+    items = {},
+    item_timer = new_timer(time(), 5, function(self, now, level)
+      -- add item to level...
+      add(level.items, items[1])
+      -- remove it from our list so we don't put it there again
+      del(items, items[1])
+    end),
+    emitter_timer = new_timer(time(), 1, function(self, now, level)
+      level.emitters = emitters(level.phase)
+    end),
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
       self.last_ts = now
       self.hero:update(dt)
+      self.item_timer:update(now, self)
+      self.emitter_timer:update(now, self)
 
       foreach(self.emitters, function(e)
         e:update(dt, self)
@@ -44,6 +54,16 @@ function level(nxt)
       if #itemgets > 0 then
         del(self.items, itemgets[1])
         self.hero:grow()
+        self.hero.points += 1
+        -- chill out current emitters...
+        foreach(self.emitters, function(e)
+            e.bullcount = 0
+          end)
+        -- ... and set a timer to instantiate the next ones
+        self.emitter_timer:init(3, time())
+        -- also set a timer for the next item to show up
+        self.item_timer:init(7, time())
+        self.phase += 1
       end
     end,
     draw = function(self)
