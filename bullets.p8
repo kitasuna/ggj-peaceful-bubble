@@ -20,16 +20,17 @@ poke(0x5f2e,1)
 #include collision.lua
 #include bullets.lua
 #include items.lua
+#include emitters.lua
 #include player.lua
 #include floating_bubble.lua
+#include texteffects.lua
 
 -- scenes
-#include title_scene.lua
-#include intro.lua
-#include level.lua
-#include death_scene.lua
-#include texteffects.lua
-#include result_scene.lua
+#include scenes/title_scene.lua
+#include scenes/intro.lua
+#include scenes/level.lua
+#include scenes/death_scene.lua
+#include scenes/clear_scene.lua
 
 __gfx__
 0000000000222f000000022222200000005555000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
