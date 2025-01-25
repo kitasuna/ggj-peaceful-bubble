@@ -1,7 +1,7 @@
 function _game_update()
   local result = state:update()
-  if result == "dead" then
-    state = level()
+  if result != nil then
+    state = result
   end
 end
 

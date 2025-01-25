@@ -39,10 +39,10 @@ function level()
       local collisions = collision(self.hero.bounds, allbulls)
       if #collisions > 0 then
         self.hero:die()
-        return "dead"
+        return cutscene()
       end
 
-      return ""  -- continue
+      return nil  -- continue
     end,
     draw = function(self)
       cls()
