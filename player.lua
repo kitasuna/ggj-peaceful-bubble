@@ -1,12 +1,38 @@
 -- Player movement. Requires bcirc.lua.
 
 -- bcirc bounds
-function player(bounds)
+function player(spawnVec)
   return {
-    bounds=bounds,
+    bounds=bcirc(spawnVec, 5),
     trail=v2(0,0),
     points=0,
+    size="small",
+    alive=true,
+    invincibility_timer=0,
     t=0,
+
+    grow=function(self)
+      self.bounds = bcirc(self.bounds.pos, 8)
+      self.size = "big"
+    end,
+
+    damage=function(self)
+      if(self.invincibility_timer > 0) then
+        return
+      end
+      if(self.size == "small") then
+        self:die()
+        return
+      end
+      self:shrink()
+      self.invincibility_timer = 30
+    end,
+
+    shrink=function(self)
+      self.bounds = bcirc(self.bounds.pos, 4)
+      self.size = "small"
+    end,
+
     update=function(self)
       local left = 0
       local right = 1
@@ -30,34 +56,32 @@ function player(bounds)
       end
       self.trail *= 0.8
       self.t += 1
+
+      self.invincibility_timer -= 1
     end,
+
     draw=function(self)
-      -- circfill(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius, 12)
-      --[[
-      if (self.prevx != self.bounds.pos.x or self.prevy != self.bounds.pos.y) and (self.prevx != nil and self.prevy != nil) then
-        if rnd() > 0.5 then
-          circ(self.prevx+4, self.prevy+4, 4, 7)
-        end
-      end
-      ]]
       local x = self.bounds.pos.x
       local y = self.bounds.pos.y
       local t = self.t
       local r = 4
-      local rf = function(t) return 0.5+sin(cos(t/400)) end
-      circ(x+r+self.trail.x,y+r+self.trail.y,r+rf(t-5),11)
-      if t%2 == 0 then
-        circ(x+r+self.trail.x/2,y+r+self.trail.y/2,r+rf(t-2),1)
-      else
-        circ(x+r+self.trail.x/2,y+r+self.trail.y/2,r+rf(t-2),3)
+      if self.size == "big" then
+        r = 8
       end
-      circ(x+r,y+r,r+rf(t),2)
-      spr(17, x-rf(t)/2, y-rf(t)/2)
-      -- spr(1, self.bounds.pos.x, self.bounds.pos.y)
-
+      local rf = function(t) return 0.5+sin(cos(t/400)) end
+      circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
+      if t%2 == 0 then
+        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
+      else
+        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
+      end
+      circ(x,y,r+rf(t),2)
+      -- Draw the oil spot.
+      spr(17, x-r-rf(t)/2, y-r-rf(t)/2)
     end,
     die=function(self)
       sfx(0)
+      self.alive = false
     end,
   }
 end

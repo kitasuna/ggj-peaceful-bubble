@@ -1,13 +1,14 @@
 function intro(nxt)
   local thoughts = {
     "...",
-    "i feel something",
-    "what is this?",
-    "i am a bubble",
-    "why?",
-    "what is the point of \nbeing here?",
-    "bullets!",
-    "aaaaaaaahhhhhh!"
+    "a thought",
+    "a feeling",
+    "what is reality?",
+    "why am I here?",
+    "why am I so bubbly?",
+    "what is the reason\nfor my existence?",
+    "light! heat! pain!",
+    "i must continue existing!"
   }
   local time_per_thought = 120
   local thought_index = 0
