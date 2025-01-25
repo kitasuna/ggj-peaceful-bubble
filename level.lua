@@ -10,10 +10,11 @@ function level()
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
+      self.last_ts = now
       self.hero:update(dt)
 
       foreach(self.emitters, function(e)
-        e:update(dt, self.hero)
+        e:update(dt, self)
       end)
 
       --[[
