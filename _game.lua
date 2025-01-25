@@ -16,8 +16,9 @@ function _game_update()
   end
 
   local collisions = collision(hero.bounds, emitter.bulls)
-  for c in all(collisions) do
-    printh("Collision!")
+  if #collisions > 0 then
+    hero:die()
+    _init()
   end
 end
 

@@ -25,5 +25,8 @@ function player(bounds)
     draw=function(self)
       circfill(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius, 12)
     end,
+    die=function(self)
+      sfx(0)
+    end,
   }
 end
