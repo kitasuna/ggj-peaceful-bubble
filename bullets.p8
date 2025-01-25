@@ -32,6 +32,8 @@ poke(0x5f2e,1)
 #include scenes/level.lua
 #include scenes/death_scene.lua
 #include scenes/clear_scene.lua
+#include scenes/credits_scene.lua
+#include scenes/thanks_scene.lua
 
 __gfx__
 0000000000222f000000022222200000005555000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

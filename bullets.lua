@@ -6,6 +6,7 @@ function new_emitter(x, y, dx, dy, bullcount, cooldown, bullet_f)
     y=y,
     dx=dx,
     dy=dy,
+    bullet_f=bullet_f,
     cycler = new_cycler(0.1, {2,3,4,5}),
     rot = 90,
     bullcount = bullcount,
@@ -48,13 +49,25 @@ function new_emitter(x, y, dx, dy, bullcount, cooldown, bullet_f)
     0,
     function(t,now,level)
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
-      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, level.hero.bounds.pos.x, level.hero.bounds.pos.y)
+      local new_bulls = {}
+      if e.bullet_f == nil then
+        new_bulls = new_aimed_bullets(
+          e.bullcount,
+          e.x,
+          e.y,
+          level.hero.bounds.pos.x,
+          level.hero.bounds.pos.y,
+          0,
+          nil)
+      else
+        new_bulls = new_bullets(e.bullcount, e.x, e.y, 0, 0, e.rot, bendy)
+      end
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
       end)
 
-      e.rot = (e.rot + 45)  % 360
+      e.rot = (e.rot + 15) % 360
       t:add(e.cooldown)
     end
     )
@@ -73,7 +86,8 @@ function waves(angle, idx)
   return angle + (15*idx)
 end
 
-function new_bullets(count, start_x, start_y, base_angle, rot_f)
+-- function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
+function new_bullets(count, start_x, start_y, tgt_x, tgt_y, base_angle, rot_f)
   local bulls = {}
   -- change the max of the for loop to make more bullets in one spawn
   for i=1,count do
@@ -105,7 +119,7 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
   return bulls
 end
 
-function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
+function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y, _, _)
   local bulls = {}
   for i=1,count do
     local diffx = tgt_x - start_x

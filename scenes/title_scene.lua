@@ -12,8 +12,9 @@ function title_scene(nxt)
     end,
     draw = function(self)
       cls()
-      print("\^w\^twhat is it like \nto be a bubble?",6,11,11)
-      print("\^w\^twhat is it like \nto be a bubble?",5,10,2)
+      -- \14: use custom font
+      print("\14what is it like \nto be a bubble?",6,11,11)
+      print("\14what is it like \nto be a bubble?",5,10,2)
       self.bubble:draw()
       print("press ❎ to come into existence",3,100,2)
     end,
