@@ -19,7 +19,7 @@ function new_emitter(x, y, dx, dy, bullet_f)
       for i, b in pairs(self.bulls) do
         b:draw(dt) 
       end
-      pal()
+      altpal()
     end,
     update = function(self, dt, level)
       for i, b in pairs(self.bulls) do
