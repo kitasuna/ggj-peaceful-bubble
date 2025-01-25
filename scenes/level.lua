@@ -19,7 +19,18 @@ function level(nxt)
       level.emitters = emitters(level.phase)
     end),
     cloud_map=wrapping_bg(0,0,32),
+    -- TODO: Add easing between these.
+    cloud_velocities={
+      v2(0.1,0.25),
+      v2(0.25,-0.1),
+      v2(-0.5,-0.3),
+    },
     star_map=wrapping_bg(32,0,32),
+    star_velocities={
+      v2(0.2,0.4),
+      v2(0.4,-0.2),
+      v2(-1.2,-0.8),
+    },
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
@@ -73,8 +84,11 @@ function level(nxt)
         nxt("complete")
       end
 
-      self.cloud_map:scroll(v2(0.1,0.25))
-      self.star_map:scroll(v2(0.2,0.4))
+      -- self.phase can outgrow our velocities.
+      if self.phase <= #self.cloud_velocities then
+        self.cloud_map:scroll(self.cloud_velocities[self.phase])
+        self.star_map:scroll(self.star_velocities[self.phase])
+      end
     end,
     draw = function(self)
       cls()
