@@ -1,19 +1,21 @@
-function level()
-
+-- level(nxt)
+-- * nxt : callback - call to end the level pass control to the next scene
+function level(nxt)
   return {
     last_ts = time(),
     emitters = {
-    new_emitter(120, 64, 0, 0.4),
-    new_emitter(64, 120, -0.4, 0)
+      new_emitter(120, 64, 0, 0.4),
+      new_emitter(64, 120, -0.4, 0),
     },
     hero = player(bcirc(v2(0,64),5)),
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
+      self.last_ts = now
       self.hero:update(dt)
 
       foreach(self.emitters, function(e)
-        e:update(dt, self.hero)
+        e:update(dt, self)
       end)
 
       --[[
@@ -39,10 +41,8 @@ function level()
       local collisions = collision(self.hero.bounds, allbulls)
       if #collisions > 0 then
         self.hero:die()
-        return cutscene()
+        nxt("dead")
       end
-
-      return nil  -- continue
     end,
     draw = function(self)
       cls()

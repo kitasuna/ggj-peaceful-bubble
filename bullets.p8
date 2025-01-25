@@ -2,15 +2,21 @@ pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
 #include _init.lua
-#include _game.lua
+#include utils.lua
+#include flow.lua
+#include scene_transition.lua
 #include bcirc.lua
 #include vector2.lua
 #include collision.lua
 #include bullets.lua
 #include player.lua
+
+-- scenes
+#include title_scene.lua
 #include level.lua
 #include cutscene.lua
 #include texteffects.lua
+#include result_scene.lua
 
 __gfx__
 00000000007776000000077777700000008888000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
