@@ -1,15 +1,24 @@
 -- cutscene(nxt)
 -- * nxt : callback - call to end the cutscene and pass control to the next scene
-function cutscene(nxt)
+function death_scene(nxt)
+
+  local death_thoughts = {
+    "was this all?",
+    "i feel empty",
+    "what was the point?",
+    "i am a failure",
+  }
+
+  local random_thought = death_thoughts[flr(rnd(#death_thoughts))+1]
+
   return {
     t = 0,
-    text=bubbletext("cutscene!",v2(20,60)),
+    text=bubbletext(random_thought,v2(20,60)),
     update = function(self)
       self.t += 1
       self.text:update()
       -- Allow early exit with btn press.
-      if self.t > 120 or btn(4) or btn(5) then
-        -- Go back to the level.
+      if btnp(❎) then
         nxt()
       end
       return nil  -- continue

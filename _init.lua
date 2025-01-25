@@ -5,9 +5,12 @@ function _init()
   -- and run them in sequence
   flow.seq({
     flow.once(title_scene),
-    flow.once(level),
-    flow.once(cutscene),
-    flow.once(result_scene),
+    flow.once(intro),
+    flow.seq({
+      flow.once(level),
+      flow.once(death_scene),
+    })
+    :thru(flow.loop)
   })
   :thru(flow.loop)
   :thru(transition_flow)

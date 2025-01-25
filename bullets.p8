@@ -22,8 +22,9 @@ poke(0x5f2e,1)
 
 -- scenes
 #include title_scene.lua
+#include intro.lua
 #include level.lua
-#include cutscene.lua
+#include death_scene.lua
 #include texteffects.lua
 #include result_scene.lua
 
