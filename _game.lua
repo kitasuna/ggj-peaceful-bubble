@@ -3,6 +3,7 @@ function _game_update()
   local now = time()
   local dt = now - last_ts
   emitter:update(dt)
+  hero:update(dt)
 
   if(btnp(0)) then
     emitter.cooldown += 0.1
@@ -14,7 +15,7 @@ function _game_update()
     emitter.bullcount -= 1
   end
 
-  local collisions = collision(hero, emitter.bulls)
+  local collisions = collision(hero.bounds, emitter.bulls)
   for c in all(collisions) do
     printh("Collision!")
   end
@@ -36,6 +37,6 @@ function _game_draw()
   -- print("Hello World", 64, 64, 12)
   emitter:draw()
   -- draw hero
-  circfill(hero.pos.x, hero.pos.y, 12, hero.radius)
+  hero:draw()
 
 end

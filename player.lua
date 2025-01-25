@@ -11,19 +11,19 @@ function player(bounds)
       local down = 3
 
       if btn(up) then
-        bounds.pos.y -= 1
+        self.bounds.pos.y -= 1
       elseif btn(down) then
-        bounds.pos.y += 1
+        self.bounds.pos.y += 1
       end
 
       if btn(left) then
-        bounds.pos.x -= 1
+        self.bounds.pos.x -= 1
       elseif btn(right) then
-        bounds.pos.x += 1
+        self.bounds.pos.x += 1
       end
     end,
     draw=function(self)
-      spr(0,bounds.pos.x,bounds.pos.y)
+      circfill(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius, 12)
     end,
   }
 end

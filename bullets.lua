@@ -1,3 +1,5 @@
+-- Requires bcirc, vector2.
+
 function new_emitter()
   local e = {
     x=64,
