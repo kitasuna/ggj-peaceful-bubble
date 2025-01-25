@@ -44,9 +44,6 @@ function level(nxt)
           del(e.bulls, bullet_collisions[1])
         end)
         self.hero:damage() -- if it gets small, make it invincible for a bit
-        if(not self.hero.alive) then
-          nxt("dead")
-        end
       end
 
       -- check for item collisions
@@ -57,13 +54,21 @@ function level(nxt)
         self.hero.points += 1
         -- chill out current emitters...
         foreach(self.emitters, function(e)
-            e.bullcount = 0
-          end)
+          e.bullcount = 0
+        end)
         -- ... and set a timer to instantiate the next ones
         self.emitter_timer:init(3, time())
         -- also set a timer for the next item to show up
         self.item_timer:init(7, time())
         self.phase += 1
+      end
+
+      -- check if we should go to the next scene
+      if not self.hero.alive then
+        nxt("dead")
+      end
+      if #self.items == 0 and #items == 0 then
+        nxt("complete")
       end
     end,
     draw = function(self)
