@@ -4,8 +4,8 @@ function level(nxt)
   return {
     last_ts = time(),
     emitters = {
-    new_emitter(120, 64, 0, 0.4),
-    new_emitter(64, 120, -0.4, 0)
+      new_emitter(120, 64, 0, 0.4),
+      new_emitter(64, 120, -0.4, 0),
     },
     hero = player(bcirc(v2(0,64),5)),
     update = function(self)

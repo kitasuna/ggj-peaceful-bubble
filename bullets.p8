@@ -4,18 +4,17 @@ __lua__
 #include _init.lua
 #include utils.lua
 #include flow.lua
+#include scene_transition.lua
 #include bcirc.lua
 #include vector2.lua
 #include collision.lua
 #include bullets.lua
 #include player.lua
-#include level.lua
-#include cutscene.lua
-#include utils.lua
 
 -- scenes
 #include title_scene.lua
 #include level.lua
+#include cutscene.lua
 #include result_scene.lua
 
 __gfx__

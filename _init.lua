@@ -10,6 +10,7 @@ function _init()
     flow.once(result_scene),
   })
   :thru(flow.loop)
+  :thru(transition_flow)
   .run(
     function(s)
       scene = s

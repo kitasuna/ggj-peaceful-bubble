@@ -28,7 +28,7 @@ function new_emitter(x, y, dx, dy, bullet_f)
           del(self.bulls, b)
         end
       end
-      self.timer:update(time())
+      self.timer:update(time(), hero)
       self.cycler:update(dt)
 
       self.x += self.dx
@@ -45,11 +45,10 @@ function new_emitter(x, y, dx, dy, bullet_f)
 
   e.timer = new_timer(
     0,
-    function(t)
+    function(t,hero)
       printh("emitter timer expired")
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
-      local state = scene
-      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, state.hero.bounds.pos.x, state.hero.bounds.pos.y)
+      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, hero.bounds.pos.x, hero.bounds.pos.y)
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
@@ -158,7 +157,7 @@ function new_timer(now, f)
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
-    update = function(t, now)
+    update = function(t, now, hero)
       printh("timer update: "..t.ttl)
       if t.ttl == 0 then
         return
@@ -167,7 +166,7 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t:f()
+        t:f(hero)
       end
     end,
   }
