@@ -6,7 +6,7 @@ function new_emitter()
     bullcount = 5,
     cooldown = 0.6,
     draw = function(e)
-      circfill(e.x,e.y,3,11)
+      -- circfill(e.x,e.y,3,11)
       for i, b in pairs(e.bulls) do
         b:draw(dt) 
       end
@@ -14,7 +14,7 @@ function new_emitter()
     update = function(e, dt)
       for i, b in pairs(e.bulls) do
         b:update(dt) 
-        if b.x > 136 or b.x < -8 or b.y > 136 or b.y < -8 then
+        if b.pos.x > 136 or b.pos.x < -8 or b.pos.y > 136 or b.pos.y < -8 then
           del(e.bulls, b)
         end
       end
@@ -66,19 +66,23 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
     -- local angle = base_rot + (15*i)
     local sinof, cosof = sin(angle/360), cos(angle/360)
     -- change the constant here to change spawning distance from emitter
-    bulls[i] = {
-      x=start_x + 5 * cosof,
-      y=start_y + 5 * sinof,
+    local bull = {
+      -- x=start_x + 5 * cosof,
+      -- y=start_y + 5 * sinof,
       dx=1*cosof,
       dy=1*sinof,
       draw=function(b)
-        circfill(b.x,b.y,2,12)
+        circfill(b.pos.x,b.pos.y,b.radius,12)
       end,
       update=function(b,dt)
-        b.x+=b.dx
-        b.y+=b.dy
+        b.pos.x+=b.dx
+        b.pos.y+=b.dy
       end,
     }
+    local bcircbull = bcirc(v2(start_x+5*cosof,start_y+5*sinof),2)
+    --  bcirc(v2(3,3),3),
+    -- bcirc(v2(0,0),1),
+    bulls[i] = merge(bull, bcircbull)
   end
   return bulls
 end
