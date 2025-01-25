@@ -6,15 +6,15 @@ function new_emitter(x, y, dx, dy, bullet_f)
     y=y,
     dx=dx,
     dy=dy,
-    cycler = new_cycler(0.1, {7,8,9,10}),
+    cycler = new_cycler(0.1, {2,3,4,5}),
     rot = 90,
     bullcount = 2,
     cooldown = 0.6,
     draw = function(self)
       -- circfill(e.x,e.y,3,11)
-      local colors = {8,9,10}
+      local colors = {2,4,5}
       for i=1,#self.cycler.colors do
-        pal(colors[i], self.cycler.colors[i]) 
+        pal(colors[i], self.cycler.colors[i])
       end
       for i, b in pairs(self.bulls) do
         b:draw(dt) 
