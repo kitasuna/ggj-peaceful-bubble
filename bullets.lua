@@ -6,33 +6,38 @@ function new_emitter(x, y, dx, dy, bullet_f)
     y=y,
     dx=dx,
     dy=dy,
+    cycler = new_cycler(0.1, {7,8,9,10}),
     rot = 90,
     bullcount = 2,
     cooldown = 0.6,
-    draw = function(e)
+    draw = function(self)
       -- circfill(e.x,e.y,3,11)
-      for i, b in pairs(e.bulls) do
+      local colors = {8,9,10}
+      for i=1,#self.cycler.colors do
+        pal(colors[i], self.cycler.colors[i]) 
+      end
+      for i, b in pairs(self.bulls) do
         b:draw(dt) 
       end
-
-      
+      pal()
     end,
-    update = function(e, dt, hero)
-      for i, b in pairs(e.bulls) do
+    update = function(self, dt, level)
+      for i, b in pairs(self.bulls) do
         b:update(dt) 
         if b.pos.x > 136 or b.pos.x < -8 or b.pos.y > 136 or b.pos.y < -8 then
-          del(e.bulls, b)
+          del(self.bulls, b)
         end
       end
-      e.timer:update(dt)
+      self.timer:update(time(), level.hero)
+      self.cycler:update(dt)
 
-      e.x += e.dx
-      e.y += e.dy
-      if e.x > 136 or e.x < -8 then
-        e.dx = -e.dx
+      self.x += self.dx
+      self.y += self.dy
+      if self.x > 136 or self.x < -8 then
+        self.dx = -self.dx
       end
-      if e.y > 136 or e.y < -8 then
-        e.dy = -e.dy
+      if self.y > 136 or self.y < -8 then
+        self.dy = -self.dy
       end
     end,
     bulls = {},
@@ -40,9 +45,10 @@ function new_emitter(x, y, dx, dy, bullet_f)
 
   e.timer = new_timer(
     0,
-    function(t)
+    function(t,now,hero)
+      printh("emitter timer expired")
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
-      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, state.hero.bounds.pos.x, state.hero.bounds.pos.y)
+      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, hero.bounds.pos.x, hero.bounds.pos.y)
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
@@ -88,7 +94,8 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
       dx=1*cosof,
       dy=1*sinof,
       draw=function(b)
-        circfill(b.pos.x,b.pos.y,b.radius,12)
+        -- circfill(b.pos.x,b.pos.y,b.radius,12)
+        spr(4, b.pos.x, b.pos.y)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx
@@ -123,7 +130,8 @@ function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
       dx=velx,
       dy=vely,
       draw=function(b)
-        circfill(b.pos.x,b.pos.y,b.radius,12)
+        -- circfill(b.pos.x,b.pos.y,b.radius,12)
+        spr(4, b.pos.x, b.pos.y)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx
@@ -149,8 +157,8 @@ function new_timer(now, f)
     add = function(t, addl_t)
       t.ttl += addl_t
     end,
-    update = function(t, now)
-      -- printh("timer update: "..t.ttl)
+    update = function(t, now, hero)
+      printh("timer update: "..t.ttl)
       if t.ttl == 0 then
         return
       end
@@ -158,7 +166,7 @@ function new_timer(now, f)
       t.last_t = now
       if t.ttl <= 0 then
         t.ttl = 0
-        t:f()
+        t:f(now, hero)
       end
     end,
   }
