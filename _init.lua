@@ -27,6 +27,8 @@ function _init()
     flow.once(title_scene),
     flow.once(intro),
     game_flow(),
+    flow.once(credits_scene),
+    flow.once(thanks_scene),
   })
   :thru(flow.loop)
   :thru(transition_flow)
