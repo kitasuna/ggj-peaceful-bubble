@@ -3,8 +3,8 @@ function level()
   return {
     last_ts = time(),
     emitters = {
-      new_emitter(64, -10),
-      new_emitter(64, 138)
+    new_emitter(120, 64, 0, 0.4),
+    new_emitter(64, 120, -0.4, 0)
     },
     hero = player(bcirc(v2(0,64),5)),
     update = function(self)
@@ -13,7 +13,7 @@ function level()
       self.hero:update(dt)
 
       foreach(self.emitters, function(e)
-        e:update(dt)
+        e:update(dt, self.hero)
       end)
 
       --[[

@@ -1,19 +1,23 @@
 -- Requires bcirc, vector2.
 
-function new_emitter(x, y)
+function new_emitter(x, y, dx, dy, bullet_f)
   local e = {
     x=x,
     y=y,
+    dx=dx,
+    dy=dy,
     rot = 90,
     bullcount = 2,
-    cooldown = 0.8,
+    cooldown = 0.6,
     draw = function(e)
       -- circfill(e.x,e.y,3,11)
       for i, b in pairs(e.bulls) do
         b:draw(dt) 
       end
+
+      
     end,
-    update = function(e, dt)
+    update = function(e, dt, hero)
       for i, b in pairs(e.bulls) do
         b:update(dt) 
         if b.pos.x > 136 or b.pos.x < -8 or b.pos.y > 136 or b.pos.y < -8 then
@@ -21,6 +25,15 @@ function new_emitter(x, y)
         end
       end
       e.timer:update(dt)
+
+      e.x += e.dx
+      e.y += e.dy
+      if e.x > 136 or e.x < -8 then
+        e.dx = -e.dx
+      end
+      if e.y > 136 or e.y < -8 then
+        e.dy = -e.dy
+      end
     end,
     bulls = {},
   }
@@ -28,7 +41,8 @@ function new_emitter(x, y)
   e.timer = new_timer(
     0,
     function(t)
-      local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
+      -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
+      local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, state.hero.bounds.pos.x, state.hero.bounds.pos.y)
 
       foreach(new_bulls, function(b)
         add(e.bulls, b)
@@ -41,8 +55,11 @@ function new_emitter(x, y)
 
     e.timer:init(e.cooldown, 0)
 
-    e.bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, waves)
-  -- change the max of the for loop to make more bullets in one spawn
+    e.bulls = new_bullets(e.bullcount,
+      e.x,
+      e.y,
+      e.rot,
+      waves)
     return e
 end
 
@@ -81,6 +98,39 @@ function new_bullets(count, start_x, start_y, base_angle, rot_f)
     local bcircbull = bcirc(v2(start_x+5*cosof,start_y+5*sinof),2)
     --  bcirc(v2(3,3),3),
     -- bcirc(v2(0,0),1),
+    bulls[i] = merge(bull, bcircbull)
+  end
+  return bulls
+end
+
+function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
+  local bulls = {}
+  -- change the max of the for loop to make more bullets in one spawn
+  for i=1,count do
+    -- change the second factor here to rotate starting positions around the emitter's origin
+    -- Guided stuff
+    -- local angle = base_rot + (i^4)
+    local diffx = tgt_x - start_x
+    local diffy = tgt_y - start_y
+    local velx = (diffx / (abs(diffx) + abs(diffy))) * 1.2
+    local vely = (diffy / (abs(diffy) + abs(diffx))) * 1.2
+
+    -- Fixed waves
+    -- local angle = base_rot + (15*i)
+    -- local sinof, cosof = sin(angle/360), cos(angle/360)
+    -- change the constant here to change spawning distance from emitter
+    local bull = {
+      dx=velx,
+      dy=vely,
+      draw=function(b)
+        circfill(b.pos.x,b.pos.y,b.radius,12)
+      end,
+      update=function(b,dt)
+        b.pos.x+=b.dx
+        b.pos.y+=b.dy
+      end,
+    }
+    local bcircbull = bcirc(v2(start_x+rnd(10)-5,start_y+rnd(10)-5),2)
     bulls[i] = merge(bull, bcircbull)
   end
   return bulls
