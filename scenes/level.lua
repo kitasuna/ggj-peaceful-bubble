@@ -18,9 +18,8 @@ function level(nxt)
     emitter_timer = new_timer(time(), 1, function(self, now, level)
       level.emitters = emitters(level.phase)
     end),
-    map_offset=v2(0,0),
-    map_velocity=v2(0.1,0.25),
-    map_size=32*8,
+    cloud_map=wrapping_bg(0,0,32),
+    star_map=wrapping_bg(32,0,32),
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
@@ -74,24 +73,13 @@ function level(nxt)
         nxt("complete")
       end
 
-      self.map_offset += self.map_velocity
-      if self.map_offset.x < 0 then
-        self.map_offset.x += self.map_size
-      elseif self.map_offset.x >= self.map_size then
-        self.map_offset.x -= self.map_size
-      end
-      if self.map_offset.y < 0 then
-        self.map_offset.y += self.map_size
-      elseif self.map_offset.y >= self.map_size then
-        self.map_offset.y -= self.map_size
-      end
+      self.cloud_map:scroll(v2(0.1,0.25))
+      self.star_map:scroll(v2(0.2,0.4))
     end,
     draw = function(self)
       cls()
-      map(0,0,-self.map_offset.x,-self.map_offset.y,32,32)
-      map(0,0,self.map_size-self.map_offset.x,-self.map_offset.y,32,32)
-      map(0,0,self.map_size-self.map_offset.x,self.map_size-self.map_offset.y,32,32)
-      map(0,0,-self.map_offset.x,self.map_size-self.map_offset.y,32,32)
+      self.cloud_map:draw()
+      self.star_map:draw()
       foreach(self.emitters, function(e)
         e:draw(dt)
       end)
