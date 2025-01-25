@@ -13,6 +13,7 @@ __lua__
 
 -- scenes
 #include title_scene.lua
+#include intro.lua
 #include level.lua
 #include cutscene.lua
 #include texteffects.lua

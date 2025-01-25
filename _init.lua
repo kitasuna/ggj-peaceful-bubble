@@ -5,6 +5,7 @@ function _init()
   -- and run them in sequence
   flow.seq({
     flow.once(title_scene),
+    flow.once(intro),
     flow.once(level),
     flow.once(cutscene),
     flow.once(result_scene),
