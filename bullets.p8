@@ -20,6 +20,7 @@ poke(0x5f2e,1)
 #include bullets.lua
 #include items.lua
 #include player.lua
+#include floating_bubble.lua
 
 -- scenes
 #include title_scene.lua

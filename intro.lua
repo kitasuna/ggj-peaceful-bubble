@@ -11,11 +11,10 @@ function intro(nxt)
   }
   local time_per_thought = 120
   local thought_index = 0
-  local bubble_y_pos = 56
-  local bubble_going_up = true
-  local bubble_max_deviation = 5
   return {
     t = 0,
+    text = bubbletext("dasdasdas", v2(10, 10)),
+    bubble = floating_bubble(56, 56, 5),
     update = function(self)
       self.t += 1
 
@@ -29,24 +28,15 @@ function intro(nxt)
       if thought_index > #thoughts then
         return nxt()
       end
-
-      --bubble movement
-      if bubble_going_up then
-        bubble_y_pos -= 0.1
-      else
-        bubble_y_pos += 0.1
-      end
-      if abs(bubble_y_pos - 56) > bubble_max_deviation then
-        bubble_going_up = not bubble_going_up
-      end
-
+      self.text.text = thoughts[thought_index]
+      self.text:update()
+      self.bubble:update()
       return nil  -- continue
     end,
     draw = function(self)
-      cls()
-      local thought = thoughts[thought_index]
-      print(thought,10,10,7)
-      spr(2, 56, bubble_y_pos, 2, 2)
+      cls()      
+      self.bubble:draw()
+      self.text:draw()
     end,
   }
 end
