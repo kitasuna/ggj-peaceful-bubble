@@ -1,5 +1,6 @@
-function level()
-
+-- level(nxt)
+-- * nxt : callback - call to end the level pass control to the next scene
+function level(nxt)
   return {
     last_ts = time(),
     emitters = {
@@ -40,10 +41,8 @@ function level()
       local collisions = collision(self.hero.bounds, allbulls)
       if #collisions > 0 then
         self.hero:die()
-        return cutscene()
+        nxt("dead")
       end
-
-      return nil  -- continue
     end,
     draw = function(self)
       cls()

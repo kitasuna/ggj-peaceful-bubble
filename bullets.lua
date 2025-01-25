@@ -47,6 +47,8 @@ function new_emitter(x, y, dx, dy, bullet_f)
     0,
     function(t)
       printh("emitter timer expired")
+      -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
+      local state = scene
       local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, state.hero.bounds.pos.x, state.hero.bounds.pos.y)
 
       foreach(new_bulls, function(b)
