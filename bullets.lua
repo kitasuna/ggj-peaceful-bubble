@@ -46,7 +46,6 @@ function new_emitter(x, y, dx, dy, bullet_f)
   e.timer = new_timer(
     0,
     function(t,now,hero)
-      printh("emitter timer expired")
       -- local new_bulls = new_bullets(e.bullcount, e.x, e.y, e.rot, bendy)
       local new_bulls = new_aimed_bullets(e.bullcount, e.x, e.y, hero.bounds.pos.x, hero.bounds.pos.y)
 
@@ -158,7 +157,6 @@ function new_timer(now, f)
       t.ttl += addl_t
     end,
     update = function(t, now, hero)
-      printh("timer update: "..t.ttl)
       if t.ttl == 0 then
         return
       end
