@@ -7,6 +7,8 @@ function level(nxt)
       new_emitter(120, 64, 0, 0.4),
       new_emitter(64, 120, -0.4, 0),
     },
+    -- figure we'll pass the level/screen index here and for emitters (eventually)
+    items = items(1),
     hero = player(bcirc(v2(0,64),5)),
     update = function(self)
       local now = time()
@@ -17,18 +19,6 @@ function level(nxt)
       foreach(self.emitters, function(e)
         e:update(dt, self)
       end)
-
-      --[[
-      if(btnp(0)) then
-        emitter.cooldown += 0.1
-      elseif(btnp(1)) then
-        emitter.cooldown -= 0.1
-      elseif(btnp(2)) then
-        emitter.bullcount += 1
-      elseif(btnp(3)) then
-        emitter.bullcount -= 1
-      end
-      ]]--
 
       local allbulls = {}
       foreach(self.emitters, function(e)
@@ -43,12 +33,20 @@ function level(nxt)
         self.hero:die()
         nxt("dead")
       end
+
+      local itemgets = collision(self.hero.bounds, self.items)
+      if #itemgets > 0 then
+        del(self.items, itemgets[1])
+        self.hero.points += 1
+      end
     end,
     draw = function(self)
       cls()
-      -- print("Hello World", 64, 64, 12)
       foreach(self.emitters, function(e)
         e:draw(dt)
+      end)
+      foreach(self.items, function(i)
+        i:draw(dt)
       end)
       -- draw hero
       self.hero:draw()

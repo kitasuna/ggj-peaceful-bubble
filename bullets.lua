@@ -111,11 +111,7 @@ end
 
 function new_aimed_bullets(count, start_x, start_y, tgt_x, tgt_y)
   local bulls = {}
-  -- change the max of the for loop to make more bullets in one spawn
   for i=1,count do
-    -- change the second factor here to rotate starting positions around the emitter's origin
-    -- Guided stuff
-    -- local angle = base_rot + (i^4)
     local diffx = tgt_x - start_x
     local diffy = tgt_y - start_y
     local velx = (diffx / (abs(diffx) + abs(diffy))) * 1.2

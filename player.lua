@@ -6,6 +6,7 @@ function player(bounds)
     bounds=bounds,
     prevx=-128,
     prevx=-128,
+    points=0,
     update=function(self)
       local left = 0
       local right = 1

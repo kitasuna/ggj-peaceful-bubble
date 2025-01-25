@@ -18,6 +18,7 @@ poke(0x5f2e,1)
 #include vector2.lua
 #include collision.lua
 #include bullets.lua
+#include items.lua
 #include player.lua
 
 -- scenes
