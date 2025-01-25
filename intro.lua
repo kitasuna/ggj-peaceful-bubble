@@ -19,6 +19,11 @@ function intro(nxt)
     update = function(self)
       self.t += 1
 
+      -- skip by pressing x
+      if btnp(❎) then
+        return nxt()
+      end
+
       --thought cycling
       thought_index = flr(self.t / time_per_thought) + 1
       if thought_index > #thoughts then

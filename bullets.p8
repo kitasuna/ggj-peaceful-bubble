@@ -15,7 +15,7 @@ __lua__
 #include title_scene.lua
 #include intro.lua
 #include level.lua
-#include cutscene.lua
+#include death_scene.lua
 #include texteffects.lua
 #include result_scene.lua
 
