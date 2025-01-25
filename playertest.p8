@@ -6,16 +6,27 @@ __lua__
 #include collision.lua
 #include player.lua
 
-local hero = bcirc(v2(0,0),2)
-local bullets = {
-  bcirc(v2(0,4),2),
-  bcirc(v2(3,3),3),
-  bcirc(v2(0,0),1),
-}
+function _init()
+  hero = player(bcirc(v2(0,0),2))
+  bullets = {
+    bcirc(v2(0,4),2),
+    bcirc(v2(3,3),3),
+    bcirc(v2(0,0),1),
+  }
+end
 
-local collisions = collision(hero, bullets)
-for c in all(collisions) do
-  print(c)
+function _update()
+  local collisions = collision(hero.bounds, bullets)
+  for c in all(collisions) do
+    --print(c)
+  end
+
+  hero:update()
+end
+
+function _draw()
+  rectfill(0,0,127,127,0)
+  hero:draw()
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
