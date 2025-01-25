@@ -68,16 +68,16 @@ function player(spawnVec)
       if self.size == "big" then
         r = 8
       end
-      local rf = function(t) return 0.5+sin(cos(t/400)) end
+      local rf = function(t) return r/4*(0.5+sin(cos(t/400))) end
       circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
       if t%2 == 0 then
         circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
       else
         circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
       end
+      -- Draw the oil spot before the top layer.
+      spr(17, x-(r+rf(t))*0.8, y-(r+rf(t))*0.8)
       circ(x,y,r+rf(t),2)
-      -- Draw the oil spot.
-      spr(17, x-r-rf(t)/2, y-r-rf(t)/2)
     end,
     die=function(self)
       sfx(0)
