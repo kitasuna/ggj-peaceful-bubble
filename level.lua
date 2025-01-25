@@ -9,7 +9,7 @@ function level(nxt)
     },
     -- figure we'll pass the level/screen index here and for emitters (eventually)
     items = items(1),
-    hero = player(bcirc(v2(0,64),5)),
+    hero = player(v2(0,64)),
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
@@ -20,6 +20,7 @@ function level(nxt)
         e:update(dt, self)
       end)
 
+      -- check for bullet collisions
       local allbulls = {}
       foreach(self.emitters, function(e)
         foreach(e.bulls, function(b)
@@ -27,17 +28,22 @@ function level(nxt)
           end
         )
       end)
-
-      local collisions = collision(self.hero.bounds, allbulls)
-      if #collisions > 0 then
-        self.hero:die()
-        nxt("dead")
+      local bullet_collisions = collision(self.hero.bounds, allbulls)
+      if #bullet_collisions > 0 then
+        foreach(self.emitters, function(e)
+          del(e.bulls, bullet_collisions[1])
+        end)
+        self.hero:damage() -- if it gets small, make it invincible for a bit
+        if(not self.hero.alive) then
+          nxt("dead")
+        end
       end
 
+      -- check for item collisions
       local itemgets = collision(self.hero.bounds, self.items)
       if #itemgets > 0 then
         del(self.items, itemgets[1])
-        self.hero.points += 1
+        self.hero:grow()
       end
     end,
     draw = function(self)
