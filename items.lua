@@ -19,5 +19,6 @@ function items()
   return {
       new_item(bcirc(v2(112,112), 5)),
       new_item(bcirc(v2(32,32), 5)),
+      new_item(bcirc(v2(112,24), 5)),
   }
 end
