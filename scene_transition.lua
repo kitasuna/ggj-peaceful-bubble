@@ -34,12 +34,12 @@ function transition_scn(cur,prv)
 				prv:draw()
 				local fac = t/dur
 				local r = 92 * fac
-				circfill(64,64,r,1)
+				circfill(64,64,r,10)
 			elseif t > dur and t <= 2*dur then
 				cur:draw()
 				local fac = (t-dur)/dur
 				local r = 92 * (1-fac)
-				circfill(64,64,r,1)
+				circfill(64,64,r,10)
 			elseif t > 2*dur then
 				cur:draw()
 			end
