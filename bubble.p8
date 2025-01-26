@@ -29,6 +29,7 @@ poke(0x5f2e,1)
 #include wobubble.lua
 #include music_controller.lua
 #include sfx_controller.lua
+#include particles.lua
 
 -- scenes
 #include scenes/title_scene.lua

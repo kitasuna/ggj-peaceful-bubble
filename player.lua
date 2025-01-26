@@ -12,6 +12,8 @@ function player(spawnVec)
     alive=true,
     invincibility_timer=0,
     death_anim=nil,
+    death_particles=nil,
+    shrink_particles=nil,
     wobubble=wobubble(),
 
     grow=function(self)
@@ -35,10 +37,17 @@ function player(spawnVec)
     shrink=function(self)
       self.bounds = bcirc(self.bounds.pos, small_radius)
       self.size = "small"
+      self.shrink_particles = particles(46, self.bounds.pos, 4)
       sfx_controller:play_sound("bubble shrink")
     end,
 
     update=function(self)
+      if self.shrink_particles != nil then
+        self.shrink_particles:update()
+      end
+      if self.death_particles != nil then
+        self.death_particles:update()
+      end
       if self.death_anim != nil then
         self.death_anim:update()
       end
@@ -87,6 +96,12 @@ function player(spawnVec)
       if self.thought != nil then
         self.thought:draw()
       end
+      if self.death_particles != nil then
+        self.death_particles:draw()
+      end
+      if self.shrink_particles != nil then
+        self.shrink_particles:draw()
+      end
       if self.death_anim != nil then
         self.death_anim:draw()
       end
@@ -98,6 +113,7 @@ function player(spawnVec)
     die=function(self)
       sfx_controller:play_sound("bubble pop")
       self.death_anim = death_animation(self.bounds.pos - v2(self.bounds.radius, self.bounds.radius))
+      self.death_particles = particles(46, self.bounds.pos, 3)
       self.alive = false
     end,
   }
