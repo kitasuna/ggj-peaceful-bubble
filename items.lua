@@ -7,9 +7,9 @@ function new_item(bounds, velvec, velttl)
     velttl = velttl,
     frames={39,41,43,45,45,43,41,39},
     current_frame=1,
-    current_framettl=0.1,
+    current_framettl=0.2,
     -- used to reset the ttl after frame change
-    framettl=0.1,
+    framettl=0.2,
     update = function(self, dt)
       self.pos += self.vel
       self.velttl -= dt

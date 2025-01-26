@@ -28,6 +28,7 @@ poke(0x5f2e,1)
 #include death_animation.lua
 #include wobubble.lua
 #include music_controller.lua
+#include sfx_controller.lua
 
 -- scenes
 #include scenes/title_scene.lua
@@ -38,18 +39,6 @@ poke(0x5f2e,1)
 #include scenes/credits_scene.lua
 #include scenes/thanks_scene.lua
 
--- music
--- 0-6  : liftoff
--- 7-20 : zero-g
-
--- sfx
--- 0 : custom instrument
--- 1 : bubble grow
--- 2 : bubble shrink
--- 3 : bubble pop
--- 4 : explosion 1
--- 5 : explosion 2
--- 6 : alarm
 
 __gfx__
 0000000000222f000000022222200000005555000000007777000000000010777701000000000071170000000000071ff1700000000071ffff17000000000000

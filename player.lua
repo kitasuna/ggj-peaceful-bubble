@@ -15,6 +15,7 @@ function player(spawnVec)
     grow=function(self)
       self.bounds = bcirc(self.bounds.pos, 8)
       self.size = "big"
+      sfx_controller:play_sound("bubble grow")
     end,
 
     damage=function(self)
@@ -32,6 +33,7 @@ function player(spawnVec)
     shrink=function(self)
       self.bounds = bcirc(self.bounds.pos, 4)
       self.size = "small"
+      sfx_controller:play_sound("bubble shrink")
     end,
 
     update=function(self)
@@ -98,7 +100,7 @@ function player(spawnVec)
     end,
 
     die=function(self)
-      sfx(3)
+      sfx_controller:play_sound("bubble pop")
       self.death_anim = death_animation(self.bounds.pos)
       self.alive = false
     end,
