@@ -164,13 +164,13 @@ function level(nxt)
       foreach(self.items, function(i)
         i:draw(dt)
       end)
-      self.hero:draw()
 
       -- if pilot exists..
       if self.pilot != nil then
         self.pilot:draw()
       end
 
+      self.hero:draw()
 
     end,
   }
