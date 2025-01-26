@@ -19,7 +19,7 @@ function particles(sprn, pos, n, vel)
       self.t+=1
       for part in all(self.parts) do
         part.pos += v2(part.vel*cos(part.dir),part.vel*sin(part.dir))
-        part.vel *= 0.7
+        part.vel *= 0.9
       end
     end,
     draw=function(self)
