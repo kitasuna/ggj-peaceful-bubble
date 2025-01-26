@@ -166,7 +166,7 @@ function level(nxt)
     spawn_pilot = function(callTimer, now, self)
       pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
       -- spawn the pilot
-      self.pilot = new_pilot(bcirc(v2(pilot_x,-32), 3), v2(0,0.2), 5)
+      self.pilot = new_pilot(bcirc(v2(pilot_x,-32), 3))
     end,
 
     draw = function(self)

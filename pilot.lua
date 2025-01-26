@@ -1,4 +1,4 @@
-function new_pilot(bounds, velvec, velttl)
+function new_pilot(bounds)
   local pilot = {
     t=0,
     start_pos=bounds.pos,
@@ -9,8 +9,6 @@ function new_pilot(bounds, velvec, velttl)
       -- draw pilot
       spr(200, self.pos.x-2, self.pos.y-self.offsets[self.current_offset]-2, 1, 1)
     end,
-    vel = velvec,
-    velttl = velttl,
     offsets={0,1,2,3,2,1,0,-1},
     current_offset=1,
     current_offsetttl=0.1,
