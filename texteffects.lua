@@ -16,12 +16,10 @@ function bubbletext(text, pos)
         if i > last_char then
           break
         end
-        print(
-          self.text[i],
-          self.pos.x+dx+3*sin(self.t/100),
-          self.pos.y+dy+2*cos((4*i+self.t)/80),
-          7
-        )
+        text_x = self.pos.x+dx+3*sin(self.t/100)
+        text_y = self.pos.y+dy+2*cos((4*i+self.t)/80)
+        print(self.text[i], text_x+1, text_y+1, 12)
+        print(self.text[i], text_x, text_y, 7)
         if self.text[i] == '\n' then
           dx = 0
           dy += 7
