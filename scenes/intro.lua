@@ -15,7 +15,7 @@ function intro(nxt)
   return {
     t = 0,
     text = bubbletext("dasdasdas", v2(10, 10)),
-    bubble = floating_bubble(56, 56, 5),
+    bubble = floating_bubble(56, 56, 5, false),
     init = function(self)
       music_controller:play_song("liftoff")
     end,
