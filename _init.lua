@@ -6,11 +6,7 @@ function _init()
   flow.seq({
     flow.once(title_scene),
     flow.once(intro),
-    flow.seq({
-      flow.once(level),
-      flow.once(death_scene),
-    })
-    :thru(flow.loop)
+    flow.once(level):thru(flow.loop),
   })
   :thru(flow.loop)
   :thru(transition_flow)

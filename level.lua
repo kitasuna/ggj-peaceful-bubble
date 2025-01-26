@@ -3,6 +3,7 @@
 function level(nxt)
   return {
     last_ts = time(),
+    restart_timer=nil,
     emitters = {
       new_emitter(120, 64, 0, 0.4),
       new_emitter(64, 120, -0.4, 0),
@@ -20,32 +21,43 @@ function level(nxt)
         e:update(dt, self)
       end)
 
-      -- check for bullet collisions
-      local allbulls = {}
-      foreach(self.emitters, function(e)
-        foreach(e.bulls, function(b)
-          add(allbulls, b)
-          end
-        )
-      end)
-      local bullet_collisions = collision(self.hero.bounds, allbulls)
-      if #bullet_collisions > 0 then
+      -- check collisions
+      if(self.hero.alive) then
+        -- check for bullet collisions
+        local allbulls = {}
         foreach(self.emitters, function(e)
-          del(e.bulls, bullet_collisions[1])
+          foreach(e.bulls, function(b)
+            add(allbulls, b)
+            end
+          )
         end)
-        self.hero:damage() -- if it gets small, make it invincible for a bit
-        if(not self.hero.alive) then
-          nxt("dead")
+        local bullet_collisions = collision(self.hero.bounds, allbulls)
+        if #bullet_collisions > 0 then
+          foreach(self.emitters, function(e)
+            del(e.bulls, bullet_collisions[1])
+          end)
+          self.hero:damage()
+          if(not self.hero.alive) then
+            self.restart_timer = 80
+          end
+        end
+        -- check for item collisions
+        local itemgets = collision(self.hero.bounds, self.items)
+        if #itemgets > 0 then
+          del(self.items, itemgets[1])
+          self.hero:grow()
         end
       end
-
-      -- check for item collisions
-      local itemgets = collision(self.hero.bounds, self.items)
-      if #itemgets > 0 then
-        del(self.items, itemgets[1])
-        self.hero:grow()
+      
+      --restart timer
+      if self.restart_timer != nil then
+        self.restart_timer -= 1
+        if self.restart_timer <= 0 then
+          return nxt()
+        end
       end
     end,
+
     draw = function(self)
       cls()
       foreach(self.emitters, function(e)

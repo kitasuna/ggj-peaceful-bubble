@@ -1,6 +1,7 @@
 -- Player movement. Requires bcirc.lua.
 
 -- bcirc bounds
+
 function player(spawnVec)
   return {
 
@@ -11,6 +12,7 @@ function player(spawnVec)
     size="small",
     alive=true,
     invincibility_timer=0,
+    death_anim=nil,
 
     grow=function(self)
       self.bounds = bcirc(self.bounds.pos, 10)
@@ -35,45 +37,64 @@ function player(spawnVec)
     end,
 
     update=function(self)
+
+      if self.death_anim != nil then
+        self.death_anim:update()
+      end
+
+      if not self.alive then
+        return
+      end
+
       local left = 0
       local right = 1
       local up = 2
       local down = 3
-
+      
       if self.bounds.pos != nil then
         self.prevx = self.bounds.pos.x
         self.prevy = self.bounds.pos.y
       end
-
+      
       if btn(up) then
         self.bounds.pos.y -= 1
       elseif btn(down) then
         self.bounds.pos.y += 1
       end
-
       if btn(left) then
         self.bounds.pos.x -= 1
       elseif btn(right) then
         self.bounds.pos.x += 1
       end
-
+      
       self.invincibility_timer -= 1
     end,
 
     draw=function(self)
-      if (self.prevx != self.bounds.pos.x or self.prevy != self.bounds.pos.y) and (self.prevx != nil and self.prevy != nil) then
-        if rnd() > 0.5 then
-          circ(self.prevx+4, self.prevy+4, 4, 7)
+      if self.thought != nil then
+        self.thought:draw()
+      end
+      if self.death_anim != nil then
+        self.death_anim:draw()
+      end
+      if self.alive then
+        if (self.prevx != self.bounds.pos.x or self.prevy != self.bounds.pos.y) and (self.prevx != nil and self.prevy != nil) then
+          if rnd() > 0.5 then
+            circ(self.prevx+4, self.prevy+4, 4, 7)
+          end
+        end
+        if(self.size == "small") then
+          spr(1, self.bounds.pos.x, self.bounds.pos.y) -- small
+        else
+          spr(2, self.bounds.pos.x, self.bounds.pos.y, 2, 2) -- big
         end
       end
-      if(self.size == "small") then
-        spr(1, self.bounds.pos.x, self.bounds.pos.y) -- small
-      else
-        spr(2, self.bounds.pos.x, self.bounds.pos.y, 2, 2) -- big
-      end
+
     end,
+
     die=function(self)
       sfx(0)
+      self.death_anim = death_animation(self.bounds.pos)
       self.alive = false
     end,
   }
