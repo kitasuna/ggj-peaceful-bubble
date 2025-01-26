@@ -123,7 +123,6 @@ function level(nxt)
       else
         self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
         self.item_timer:init(7 + (self.phase * 2), time())
-        self.phase += 1
         self.phase_t = 0
       end
     end,
