@@ -5,13 +5,12 @@
 function player(spawnVec)
   return {
     bounds=bcirc(spawnVec, 5),
-    trail=v2(0,0),
     points=0,
     size="small",
     alive=true,
     invincibility_timer=0,
     death_anim=nil,
-    t=0,
+    wobubble=wobubble(),
 
     grow=function(self)
       self.bounds = bcirc(self.bounds.pos, 8)
@@ -50,22 +49,23 @@ function player(spawnVec)
       local up = 2
       local down = 3
 
+      local dx = 0
+      local dy = 0
       if btn(up) then
         self.bounds.pos.y -= 1
-        self.trail.y = min(3, self.trail.y + 1.5)
+        dy = -1
       elseif btn(down) then
         self.bounds.pos.y += 1
-        self.trail.y = max(-2, self.trail.y - 0.5)
+        dy = 1
       end
       if btn(left) then
         self.bounds.pos.x -= 1
-        self.trail.x = min(3, self.trail.x + 1.5)
+        dx = -1
       elseif btn(right) then
         self.bounds.pos.x += 1
-        self.trail.x = max(-2, self.trail.x - 0.5)
+        dx = 1
       end
-      self.trail *= 0.8
-      self.t += 1
+      self.wobubble:update(dx, dy)
 
       self.invincibility_timer -= 1
     end,
@@ -80,21 +80,11 @@ function player(spawnVec)
       if self.alive then
         local x = self.bounds.pos.x
         local y = self.bounds.pos.y
-        local t = self.t
         local r = 4
         if self.size == "big" then
           r = 8
         end
-        local rf = function(t) return r/4*(0.5+sin(cos(t/400))) end
-        circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
-        if t%2 == 0 then
-          circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
-        else
-          circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
-        end
-        -- Draw the oil spot before the top layer.
-        spr(17, x-(r+rf(t))*0.8, y-(r+rf(t))*0.8)
-        circ(x,y,r+rf(t),2)
+        self.wobubble:draw(x, y, r)
       end
     end,
 
