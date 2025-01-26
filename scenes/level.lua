@@ -23,6 +23,7 @@ function level(nxt)
     end),
     pilot_spawn_timer = nil,
     pilot = nil,
+    interphase = false,
     cloud_map=wrapping_bg(0,0,32),
     cloud_velocities={
       v2(0.1,0.25),
@@ -58,9 +59,18 @@ function level(nxt)
         self.pilot:update(dt, self)
       end
 
+      local total_bulls = 0
       foreach(self.emitters, function(e)
         e:update(dt, self)
+        total_bulls += e.bullcount
+        total_bulls += #e.bulls
       end)
+
+      if total_bulls == 0 and self.interphase then
+        printh("Oh man, trigger now")
+        self:cue_next_phase()
+        printh("phase: "..self.phase)
+      end
 
       foreach(self.items, function(i)
         i:update(dt)
@@ -90,6 +100,7 @@ function level(nxt)
         -- check for item collisions
         local itemgets = collision(self.hero.bounds, self.items)
         if #itemgets > 0 then
+          -- ej
           self:on_item_hero_collision(itemgets[1])
         end
 
@@ -131,7 +142,12 @@ function level(nxt)
       self.hero:grow()
       del(self.items, item)
       self:stop_emitters()
+      self.interphase = true
+    end,
+
+    cue_next_phase = function(self)
       self.phase += 1
+      self.interphase = false
       if #self.items == 0 and #items == 0 then
         self.pilot_spawn_timer = new_timer(time(), 1, self.spawn_pilot)
       else
