@@ -109,7 +109,7 @@ function player(spawnVec)
     end,
 
     die=function(self)
-      sfx(0)
+      sfx(3)
       self.death_anim = death_animation(self.bounds.pos)
       self.alive = false
     end,

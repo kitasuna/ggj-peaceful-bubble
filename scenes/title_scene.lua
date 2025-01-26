@@ -9,6 +9,9 @@ function title_scene(nxt)
     cloud_v=v2(0.1,0.25),
     star_v=v2(0.2,0.4),
 
+    init = function(self)
+      music_controller:play_song("liftoff")
+    end,
     update = function(self)
       if btnp(❎) then
         return nxt()

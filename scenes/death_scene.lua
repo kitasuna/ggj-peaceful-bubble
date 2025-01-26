@@ -14,6 +14,8 @@ function death_scene(nxt)
   return {
     t = 0,
     text=bubbletext(random_thought,v2(20,60)),
+    init = function(self)
+    end,
     update = function(self)
       self.t += 1
       self.text:update()

@@ -3,6 +3,9 @@
 function thanks_scene(nxt)
   return {
     bubble = floating_bubble(56, 80, 5),
+    init = function(self)
+      music_controller:stop()
+    end,
     update = function(self)
       if btnp(❎) then
         return nxt()

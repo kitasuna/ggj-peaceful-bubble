@@ -4,6 +4,8 @@ function clear_scene(nxt)
   return {
     t = 0,
     text=bubbletext("i did it!",v2(20,60)),
+    init = function(self)
+    end,
     update = function(self)
       self.t += 1
       self.text:update()

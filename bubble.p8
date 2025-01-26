@@ -26,6 +26,7 @@ poke(0x5f2e,1)
 #include texteffects.lua
 #include wrapping_bg.lua
 #include death_animation.lua
+#include music_controller.lua
 
 -- scenes
 #include scenes/title_scene.lua
