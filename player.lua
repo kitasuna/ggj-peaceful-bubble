@@ -36,14 +36,16 @@ function player(spawnVec)
     end,
 
     update=function(self)
-
       if self.death_anim != nil then
         self.death_anim:update()
       end
-
-      if not self.alive then
-        return
+      if self.alive then
+        self:update_movement()
+        self.invincibility_timer -= 1
       end
+    end,
+
+    update_movement=function(self)
 
       local left = 0
       local right = 1
@@ -51,23 +53,31 @@ function player(spawnVec)
       local down = 3
 
       if btn(up) then
-        self.bounds.pos.y -= 1
-        self.trail.y = min(3, self.trail.y + 1.5)
+        if(self.bounds.pos.y > 0) then
+          self.bounds.pos.y -= 1
+          self.trail.y = min(3, self.trail.y + 1.5)
+        end
       elseif btn(down) then
-        self.bounds.pos.y += 1
-        self.trail.y = max(-2, self.trail.y - 0.5)
+        if(self.bounds.pos.y < 128) then
+          self.bounds.pos.y += 1
+          self.trail.y = max(-2, self.trail.y - 0.5)
+        end
       end
+
       if btn(left) then
-        self.bounds.pos.x -= 1
-        self.trail.x = min(3, self.trail.x + 1.5)
+        if(self.bounds.pos.x > 0) then
+          self.bounds.pos.x -= 1
+          self.trail.x = min(3, self.trail.x + 1.5)
+        end
       elseif btn(right) then
-        self.bounds.pos.x += 1
-        self.trail.x = max(-2, self.trail.x - 0.5)
+        if(self.bounds.pos.x < 128) then
+          self.bounds.pos.x += 1
+          self.trail.x = max(-2, self.trail.x - 0.5)
+        end
       end
+      
       self.trail *= 0.8
       self.t += 1
-
-      self.invincibility_timer -= 1
     end,
 
     draw=function(self)
