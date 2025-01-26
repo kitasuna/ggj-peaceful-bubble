@@ -7,13 +7,13 @@ function new_emitter(x, y, dx, dy, bullcount, cooldown, bullet_f)
     dx=dx,
     dy=dy,
     bullet_f=bullet_f,
-    cycler = new_cycler(0.1, {2,3,4,5}),
+    cycler = new_cycler(0.1, {2,4,3,5}),
     rot = 90,
     bullcount = bullcount,
     cooldown = cooldown,
     draw = function(self)
       -- circfill(e.x,e.y,3,11)
-      local colors = {2,4,5}
+      local colors = {5,3,4}
       for i=1,#self.cycler.colors do
         pal(colors[i], self.cycler.colors[i])
       end
@@ -104,7 +104,7 @@ function new_bullets(count, start_x, start_y, tgt_x, tgt_y, base_angle, rot_f)
       dy=1*sinof,
       draw=function(b)
         -- circfill(b.pos.x,b.pos.y,b.radius,12)
-        spr(4, b.pos.x, b.pos.y)
+        spr(4, b.pos.x-4, b.pos.y-4)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx

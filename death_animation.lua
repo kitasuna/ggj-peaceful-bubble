@@ -15,7 +15,7 @@ function death_animation(pos)
     current_sprite_id=1,
     animation_done=false,
     frames_per_sprite=3,
-    thought=bubbletext(thought_text, pos),
+    thought=bubbletext(thought_text, pos-v2(0,8)),
 
     update=function(self)
       self.thought:update()
