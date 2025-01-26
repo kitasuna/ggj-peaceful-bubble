@@ -87,7 +87,7 @@ function level(nxt)
           -- ... and set a timer to instantiate the next ones
           self.emitter_timer:init(3, time())
           -- also set a timer for the next item to show up
-          self.item_timer:init(7, time())
+          self.item_timer:init(7 + (self.phase * 2), time())
           self.phase += 1
           self.phase_t = 0
         end
