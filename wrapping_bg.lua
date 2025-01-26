@@ -9,7 +9,7 @@ function wrapping_bg(tx,ty,map_size)
       self.offset += d
       if self.offset.x < 0 then
         self.offset.x += self.map_size*8
-      elseif self.offset.x >= 8*self.map_size*8 then
+      elseif self.offset.x >= self.map_size*8 then
         self.offset.x -= self.map_size*8
       end
       if self.offset.y < 0 then
