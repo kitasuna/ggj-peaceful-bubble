@@ -1,6 +1,7 @@
 function intro(nxt)
   local thoughts = {
     "...",
+    "...",
     "a thought",
     "a feeling",
     "what is reality?",
@@ -8,39 +9,66 @@ function intro(nxt)
     "why am I so bubbly?",
     "what is the reason\nfor my existence?",
     "light! heat! pain!",
-    "i must continue existing!"
+    "i must continue existing"
   }
-  local time_per_thought = 120
-  local thought_index = 0
+  local base_time_per_thought = 80
+  local time_add_per_letter = 3
   return {
-    t = 0,
-    text = bubbletext("dasdasdas", v2(10, 10)),
+    current_thought_time = 0,
+    max_time_for_current_thought = 0,
+    text = bubbletext(thoughts[1], v2(10, 10)),
     bubble = floating_bubble(56, 56, 5, false),
+    current_thought_id = 1,
+    cloud_map=wrapping_bg(0,0,32),
+    star_map=wrapping_bg(32,0,32),
+
     init = function(self)
       music_controller:play_song("liftoff")
+      max_time_for_current_thought = base_time_per_thought + #thoughts[self.current_thought_id] * time_add_per_letter
     end,
+    
     update = function(self)
-      self.t += 1
-
       -- skip by pressing x
       if btnp(❎) then
         return nxt()
       end
 
       --thought cycling
-      thought_index = flr(self.t / time_per_thought) + 1
-      if thought_index > #thoughts then
-        return nxt()
+      self.current_thought_time += 1
+      if self.current_thought_time >= self.max_time_for_current_thought then
+        self.current_thought_id += 1
+        if self.current_thought_id > #thoughts then
+          return nxt()
+        end
+        self.current_thought_time = 0
+        thought_length = #thoughts[self.current_thought_id]
+        self.max_time_for_current_thought = base_time_per_thought + thought_length * time_add_per_letter
+        local length_of_first_line = 0
+        for i=1,thought_length do
+          if thoughts[self.current_thought_id][i] == '\n' then
+            break
+          end
+          length_of_first_line += 1
+        end
+        text_x = 64 - 2 * length_of_first_line
+        self.text = bubbletext(thoughts[self.current_thought_id], v2(text_x, 20))
       end
-      self.text.text = thoughts[thought_index]
       self.text:update()
+
+      --graphics
+      self.cloud_map:scroll(v2(0.1,0.1))
+      self.star_map:scroll(v2(0.2,0.2))
       self.bubble:update()
       return nil  -- continue
     end,
+
     draw = function(self)
-      cls()      
+      cls()
+      self.cloud_map:draw()
+      self.star_map:draw()      
       self.bubble:draw()
       self.text:draw()
     end,
+
   }
 end
