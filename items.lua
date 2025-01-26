@@ -1,4 +1,4 @@
-function new_item(posvec)
+function new_item(bounds, velvec, velttl)
   local item = {
     draw = function(self)
       rectfill(
@@ -8,17 +8,24 @@ function new_item(posvec)
         self.pos.y+4
       )
     end,
-    update = function(self)
-
+    vel = velvec,
+    velttl = velttl,
+    update = function(self, dt)
+      self.pos += self.vel
+      self.velttl -= dt
+      if self.velttl <= 0 then
+        self.vel = v2(0,0)
+      end
     end,
   }
-  return merge(item, posvec)
+  local tmp= merge(item, bounds)
+  return tmp
 end
 
 function items()
   return {
-      new_item(bcirc(v2(112,112), 5)),
-      new_item(bcirc(v2(32,32), 5)),
-      new_item(bcirc(v2(112,24), 5)),
+      new_item(bcirc(v2(136,136), 5), v2(-0.25,-0.30), 3),
+      new_item(bcirc(v2(136,-8), 5), v2(-0.30,0.20), 3),
+      new_item(bcirc(v2(-8,-8), 5), v2(0.55,0.35), 2),
   }
 end
