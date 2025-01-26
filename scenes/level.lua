@@ -4,6 +4,7 @@ function level(nxt)
   local items = items(1)
   return {
     last_ts = time(),
+    restart_timer=nil,
     phase = 1,
     emitters = {},
     -- figure we'll pass the level/screen index here and for emitters (eventually)
@@ -43,51 +44,62 @@ function level(nxt)
         e:update(dt, self)
       end)
 
-      -- check for bullet collisions
-      local allbulls = {}
-      foreach(self.emitters, function(e)
-        foreach(e.bulls, function(b)
-          add(allbulls, b)
+      -- check collisions
+      if(self.hero.alive) then
+        -- check for bullet collisions
+        local allbulls = {}
+        foreach(self.emitters, function(e)
+          foreach(e.bulls, function(b)
+            add(allbulls, b)
+            end
+          )
+        end)
+        local bullet_collisions = collision(self.hero.bounds, allbulls)
+        if #bullet_collisions > 0 then
+          foreach(self.emitters, function(e)
+            del(e.bulls, bullet_collisions[1])
+          end)
+          self.hero:damage()
+          if(not self.hero.alive) then
+            self.restart_timer = 80
           end
-        )
-      end)
-      local bullet_collisions = collision(self.hero.bounds, allbulls)
-      if #bullet_collisions > 0 then
-        foreach(self.emitters, function(e)
-          del(e.bulls, bullet_collisions[1])
-        end)
-        self.hero:damage() -- if it gets small, make it invincible for a bit
-      end
+        end
 
-      -- check for item collisions
-      local itemgets = collision(self.hero.bounds, self.items)
-      if #itemgets > 0 then
-        del(self.items, itemgets[1])
-        self.hero:grow()
-        self.hero.points += 1
-        -- chill out current emitters...
-        foreach(self.emitters, function(e)
-          e.bullcount = 0
-        end)
-        -- ... and set a timer to instantiate the next ones
-        self.emitter_timer:init(3, time())
-        -- also set a timer for the next item to show up
-        self.item_timer:init(7, time())
-        self.phase += 1
-      end
+        -- check for item collisions
+        local itemgets = collision(self.hero.bounds, self.items)
+        if #itemgets > 0 then
+          del(self.items, itemgets[1])
+          self.hero:grow()
+          self.hero.points += 1
+          -- chill out current emitters...
+          foreach(self.emitters, function(e)
+            e.bullcount = 0
+          end)
+          -- ... and set a timer to instantiate the next ones
+          self.emitter_timer:init(3, time())
+          -- also set a timer for the next item to show up
+          self.item_timer:init(7, time())
+          self.phase += 1
+        end
 
-      -- check if we should go to the next scene
-      if not self.hero.alive then
-        nxt("dead")
-      end
-      if #self.items == 0 and #items == 0 then
-        nxt("complete")
+        -- check if we should go to the next scene
+        if #self.items == 0 and #items == 0 then
+          nxt("complete")
+        end
       end
 
       -- self.phase can outgrow our velocities.
       if self.phase <= #self.cloud_velocities then
         self.cloud_map:scroll(self.cloud_velocities[self.phase])
         self.star_map:scroll(self.star_velocities[self.phase])
+      end
+      
+      --restart timer
+      if self.restart_timer != nil then
+        self.restart_timer -= 1
+        if self.restart_timer <= 0 then
+          return nxt("dead") -- todo: restart level
+        end
       end
     end,
     draw = function(self)

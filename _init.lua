@@ -9,10 +9,7 @@ function _init()
       :flatmap(function(res)
         -- retry if the player died
         if res == "dead" then
-          return flow.seq({
-            flow.once(death_scene),
-            game_flow(),
-          })
+          return game_flow()
         end
         -- otherwise, show the victory scene and proceed
         if res == "complete" then

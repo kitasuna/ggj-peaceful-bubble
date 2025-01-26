@@ -1,6 +1,7 @@
 -- Player movement. Requires bcirc.lua.
 
 -- bcirc bounds
+
 function player(spawnVec)
   return {
     bounds=bcirc(spawnVec, 5),
@@ -9,6 +10,7 @@ function player(spawnVec)
     size="small",
     alive=true,
     invincibility_timer=0,
+    death_anim=nil,
     t=0,
 
     grow=function(self)
@@ -34,6 +36,15 @@ function player(spawnVec)
     end,
 
     update=function(self)
+
+      if self.death_anim != nil then
+        self.death_anim:update()
+      end
+
+      if not self.alive then
+        return
+      end
+
       local left = 0
       local right = 1
       local up = 2
@@ -46,7 +57,6 @@ function player(spawnVec)
         self.bounds.pos.y += 1
         self.trail.y = max(-2, self.trail.y - 0.5)
       end
-
       if btn(left) then
         self.bounds.pos.x -= 1
         self.trail.x = min(3, self.trail.x + 1.5)
@@ -61,26 +71,36 @@ function player(spawnVec)
     end,
 
     draw=function(self)
-      local x = self.bounds.pos.x
-      local y = self.bounds.pos.y
-      local t = self.t
-      local r = 4
-      if self.size == "big" then
-        r = 8
+      if self.thought != nil then
+        self.thought:draw()
       end
-      local rf = function(t) return r/4*(0.5+sin(cos(t/400))) end
-      circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
-      if t%2 == 0 then
-        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
-      else
-        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
+      if self.death_anim != nil then
+        self.death_anim:draw()
       end
-      -- Draw the oil spot before the top layer.
-      spr(17, x-(r+rf(t))*0.8, y-(r+rf(t))*0.8)
-      circ(x,y,r+rf(t),2)
+      if self.alive then
+        local x = self.bounds.pos.x
+        local y = self.bounds.pos.y
+        local t = self.t
+        local r = 4
+        if self.size == "big" then
+          r = 8
+        end
+        local rf = function(t) return r/4*(0.5+sin(cos(t/400))) end
+        circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
+        if t%2 == 0 then
+          circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
+        else
+          circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
+        end
+        -- Draw the oil spot before the top layer.
+        spr(17, x-(r+rf(t))*0.8, y-(r+rf(t))*0.8)
+        circ(x,y,r+rf(t),2)
+      end
     end,
+
     die=function(self)
       sfx(0)
+      self.death_anim = death_animation(self.bounds.pos)
       self.alive = false
     end,
   }
