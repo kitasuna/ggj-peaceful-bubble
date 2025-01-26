@@ -22,6 +22,7 @@ poke(0x5f2e,1)
 #include items.lua
 #include emitters.lua
 #include player.lua
+#include pilot.lua
 #include floating_bubble.lua
 #include texteffects.lua
 #include wrapping_bg.lua

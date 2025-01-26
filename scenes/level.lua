@@ -22,6 +22,7 @@ function level(nxt)
       level.emitters = emitters(level.phase)
     end),
     pilot_spawn_timer = nil,
+    pilot = nil,
     cloud_map=wrapping_bg(0,0,32),
     cloud_velocities={
       v2(0.1,0.25),
@@ -52,7 +53,9 @@ function level(nxt)
       self.passing_ship:update()
       if(self.pilot_spawn_timer != nil) then
         self.pilot_spawn_timer:update(now, self)
-        print("pilot time update", 50, 50, 7)  
+      end
+      if(self.pilot != nil) then
+        self.pilot:update(dt, self)
       end
 
       foreach(self.emitters, function(e)
@@ -89,6 +92,14 @@ function level(nxt)
         if #itemgets > 0 then
           self:on_item_hero_collision(itemgets[1])
         end
+
+        if self.pilot != nil then
+          -- check for pilot collision / end game
+          local pilotgets = collision(self.hero.bounds, {self.pilot})
+          if #pilotgets > 0 then
+            nxt("complete")
+          end
+        end
       end
 
       -- self.phase can outgrow our velocities.
@@ -122,7 +133,7 @@ function level(nxt)
       self:stop_emitters()
       self.phase += 1
       if #self.items == 0 and #items == 0 then
-        self.pilot_spawn_timer = new_timer(time(), 5, self.spawn_pilot)
+        self.pilot_spawn_timer = new_timer(time(), 1, self.spawn_pilot)
       else
         self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
         self.item_timer:init(7 + (self.phase * 2), time())
@@ -139,7 +150,7 @@ function level(nxt)
     spawn_pilot = function(callTimer, now, self)
       pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
       -- spawn the pilot
-      -- set timer to end level
+      self.pilot = new_pilot(bcirc(v2(pilot_x,-32), 3), v2(0,0.2), 5)
     end,
 
     draw = function(self)
@@ -154,6 +165,13 @@ function level(nxt)
         i:draw(dt)
       end)
       self.hero:draw()
+
+      -- if pilot exists..
+      if self.pilot != nil then
+        self.pilot:draw()
+      end
+
+
     end,
   }
 end
