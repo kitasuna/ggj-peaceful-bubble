@@ -24,14 +24,23 @@ function title_scene(nxt)
       return nil
     end,
     draw = function(self)
+
       cls()
+
       self.cloud_map:draw()
       self.star_map:draw()
-      -- \14: use custom font
-      print("\14what is it like \nto be a bubble?",6,11,11)
-      print("\14what is it like \nto be a bubble?",5,10,2)
+
+      print("\14what is it like",8,13,11)
+      print("\14what is it like",7,12,2)
+
+      print("\14to be a bubble?",6,27,11)
+      print("\14to be a bubble?",5,26,2)
+
       self.bubble:draw()
-      print("press ❎ to come into existence",3,100,2)
+
+      print("press ❎ to come",34,100,2)
+      print("into existence",38,110,2)
+
     end,
   }
 end
