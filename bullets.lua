@@ -104,7 +104,7 @@ function new_bullets(count, start_x, start_y, tgt_x, tgt_y, base_angle, rot_f)
       dy=1*sinof,
       draw=function(b)
         -- circfill(b.pos.x,b.pos.y,b.radius,12)
-        spr(4, b.pos.x, b.pos.y)
+        spr(4, b.pos.x-4, b.pos.y-4)
       end,
       update=function(b,dt)
         b.pos.x+=b.dx
