@@ -3,8 +3,10 @@
 -- bcirc bounds
 
 function player(spawnVec)
+  local small_radius=4
+  local big_radius=8
   return {
-    bounds=bcirc(spawnVec, 5),
+    bounds=bcirc(spawnVec, small_radius),
     points=0,
     size="small",
     alive=true,
@@ -13,7 +15,7 @@ function player(spawnVec)
     wobubble=wobubble(),
 
     grow=function(self)
-      self.bounds = bcirc(self.bounds.pos, 8)
+      self.bounds = bcirc(self.bounds.pos, big_radius)
       self.size = "big"
       sfx_controller:play_sound("bubble grow")
     end,
@@ -31,7 +33,7 @@ function player(spawnVec)
     end,
 
     shrink=function(self)
-      self.bounds = bcirc(self.bounds.pos, 4)
+      self.bounds = bcirc(self.bounds.pos, small_radius)
       self.size = "small"
       sfx_controller:play_sound("bubble shrink")
     end,
@@ -89,19 +91,13 @@ function player(spawnVec)
         self.death_anim:draw()
       end
       if self.alive then
-        local x = self.bounds.pos.x
-        local y = self.bounds.pos.y
-        local r = 4
-        if self.size == "big" then
-          r = 8
-        end
-        self.wobubble:draw(x, y, r)
+        self.wobubble:draw(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius)
       end
     end,
 
     die=function(self)
       sfx_controller:play_sound("bubble pop")
-      self.death_anim = death_animation(self.bounds.pos)
+      self.death_anim = death_animation(self.bounds.pos - v2(self.bounds.radius, self.bounds.radius))
       self.alive = false
     end,
   }
