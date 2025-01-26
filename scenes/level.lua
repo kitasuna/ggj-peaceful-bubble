@@ -18,6 +18,7 @@ function level(nxt)
       -- remove it from our list so we don't put it there again
       del(items, items[1])
     end),
+    item_particles=nil,
     emitter_timer = new_timer(time(), 1, function(self, now, level)
       level.emitters = emitters(level.phase)
     end),
@@ -75,6 +76,10 @@ function level(nxt)
       foreach(self.items, function(i)
         i:update(dt)
       end)
+
+      if self.item_particles != nil then
+        self.item_particles:update()
+      end
 
       -- check collisions
       if(self.hero.alive) then
@@ -140,6 +145,7 @@ function level(nxt)
 
     on_item_hero_collision = function(self, item)
       self.hero:grow()
+      self.item_particles = particles(46, item.pos+v2(4,4), 3, 1)
       del(self.items, item)
       self:stop_emitters()
       self.interphase = true
@@ -180,6 +186,9 @@ function level(nxt)
       foreach(self.items, function(i)
         i:draw(dt)
       end)
+      if self.item_particles != nil then
+        self.item_particles:draw()
+      end
 
       -- if pilot exists..
       if self.pilot != nil then
