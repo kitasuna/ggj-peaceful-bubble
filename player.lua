@@ -37,7 +37,7 @@ function player(spawnVec)
     shrink=function(self)
       self.bounds = bcirc(self.bounds.pos, small_radius)
       self.size = "small"
-      self.shrink_particles = particles(46, self.bounds.pos, 4)
+      self.shrink_particles = particles(46, self.bounds.pos, 4, 2)
       sfx_controller:play_sound("bubble shrink")
     end,
 
@@ -113,7 +113,7 @@ function player(spawnVec)
     die=function(self)
       sfx_controller:play_sound("bubble pop")
       self.death_anim = death_animation(self.bounds.pos - v2(self.bounds.radius, self.bounds.radius))
-      self.death_particles = particles(46, self.bounds.pos, 3)
+      self.death_particles = particles(46, self.bounds.pos, 3, 1)
       self.alive = false
     end,
   }

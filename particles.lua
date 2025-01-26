@@ -1,9 +1,9 @@
-function particles(sprn, pos, n)
+function particles(sprn, pos, n, vel)
   local parts = {}
   for i=1,n do
     add(parts, {
       pos=pos,
-      vel=1+rnd(),
+      vel=vel*(1+rnd()),
       dir=i/n+0.1*rnd(),
     })
   end
