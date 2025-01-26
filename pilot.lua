@@ -5,7 +5,6 @@ function new_pilot(bounds, velvec, velttl)
       spr(198, self.pos.x-24, self.pos.y+8, 2, 2)
       -- draw pilot
       spr(200, self.pos.x-2, self.pos.y-self.offsets[self.current_offset]-2, 1, 1)
-      circ(self.pos.x, self.pos.y, 4, 12)
     end,
     vel = velvec,
     velttl = velttl,
