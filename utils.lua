@@ -57,3 +57,16 @@ function ease(a, b, t)
   t = min(1, max(0, t))
   return a + (b - a) * t
 end
+
+function cube_ease(a, b, t)
+  -- clamp to [0,1]
+  t = min(1, max(0, t))
+  return a + (b - a) * (1-(1-t)^3)
+end
+
+function sine_ease(a, b, t)
+  -- clamp to [0,1]
+  t = min(1, max(0, t))
+  -- sin is inverted for screen space
+  return a + (b - a) * sin(-t/4)
+end

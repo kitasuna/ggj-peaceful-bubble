@@ -1,5 +1,8 @@
 function new_pilot(bounds, velvec, velttl)
   local pilot = {
+    t=0,
+    start_pos=bounds.pos,
+    end_pos=bounds.pos+v2(0,60),
     draw = function(self)
       -- draw ship
       spr(198, self.pos.x-24, self.pos.y+8, 2, 2)
@@ -14,11 +17,8 @@ function new_pilot(bounds, velvec, velttl)
     -- used to reset the ttl after pos change
     offsetttl=0.8,
     update = function(self, dt)
-      self.pos += self.vel
-      self.velttl -= dt
-      if self.velttl <= 0 then
-        self.vel = v2(0,0)
-      end
+      self.t += 1
+      self.pos = sine_ease(self.start_pos, self.end_pos, self.t/400)
 
       self.current_offsetttl -= dt
       if self.current_offsetttl <= 0 then
