@@ -3,6 +3,7 @@
 function level(nxt)
   local items = items(1)
   return {
+    passing_ship = passing_ship(),
     last_ts = time(),
     restart_timer=nil,
     phase = 1,
@@ -39,6 +40,7 @@ function level(nxt)
     init = function(self)
       music_controller:play_song("zero_g")
     end,
+
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
@@ -47,6 +49,7 @@ function level(nxt)
       self.item_timer:update(now, self)
       self.emitter_timer:update(now, self)
       self.phase_t += 1
+      self.passing_ship:update()
       if(self.pilot_spawn_timer != nil) then
         self.pilot_spawn_timer:update(now, self)
         print("pilot time update", 50, 50, 7)  
@@ -133,7 +136,7 @@ function level(nxt)
       end)
     end,
 
-    spawn_pilot = function(self)
+    spawn_pilot = function(callTimer, now, self)
       pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
       -- spawn the pilot
       -- set timer to end level
@@ -143,13 +146,13 @@ function level(nxt)
       cls()
       self.cloud_map:draw()
       self.star_map:draw()
+      self.passing_ship:draw()
       foreach(self.emitters, function(e)
         e:draw(dt)
       end)
       foreach(self.items, function(i)
         i:draw(dt)
       end)
-      -- draw hero
       self.hero:draw()
     end,
   }
