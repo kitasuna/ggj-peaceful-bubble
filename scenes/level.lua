@@ -122,8 +122,8 @@ function level(nxt)
     end,
 
     spawn_pilot = function(self)
-      print("spawn pilot NOW", 50, 50, 7)  
-      -- spawn pilot
+      pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
+      -- spawn the pilot
       -- set timer to end level
     end,
 
