@@ -51,3 +51,9 @@ function once(f)
 		end
 	end
 end
+
+function ease(a, b, t)
+  -- clamp to [0,1]
+  t = min(1, max(0, t))
+  return a + (b - a) * t
+end
