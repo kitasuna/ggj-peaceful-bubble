@@ -21,16 +21,23 @@ function wobubble()
       if self.size == "big" then
         r = 8
       end
+      local function draw_layer(x, y, r, c)
+        -- How great is the trail's X magnitude relative to the Y?
+        local x_winning = (2+abs(self.trail.x) - abs(self.trail.y))/5-0.5;
+        local xr = r * (1 + x_winning/2)
+        local yr = r * (1 - x_winning/2)
+        oval(x-xr,y-yr,x+xr,y+yr,c)
+      end
       local rf = function(t) return r/4*(0.5+sin(cos(t/400))) end
-      circ(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
+      draw_layer(x+self.trail.x,y+self.trail.y,r+rf(t-5),11)
       if t%2 == 0 then
-        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
+        draw_layer(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),1)
       else
-        circ(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
+        draw_layer(x+self.trail.x/2,y+self.trail.y/2,r+rf(t-2),3)
       end
       -- Draw the oil spot before the top layer.
       spr(17, x-(r+rf(t))*0.7, y-(r+rf(t))*0.7)
-      circ(x,y,r+rf(t),2)
+      draw_layer(x,y,r+rf(t),2)
     end,
   }
 end
