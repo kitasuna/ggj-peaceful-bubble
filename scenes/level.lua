@@ -148,12 +148,12 @@ function level(nxt)
     cue_next_phase = function(self)
       self.phase += 1
       self.interphase = false
+      self.phase_t = 0
       if #self.items == 0 and #items == 0 then
         self.pilot_spawn_timer = new_timer(time(), 1, self.spawn_pilot)
       else
         self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
         self.item_timer:init(7 + (self.phase * 2), time())
-        self.phase_t = 0
       end
     end,
 
