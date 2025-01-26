@@ -16,6 +16,9 @@ function player(spawnVec)
     grow=function(self)
       self.bounds = bcirc(self.bounds.pos, 8)
       self.size = "big"
+      self.points += 1
+      -- should add a "thought" here as well
+      -- that dissapears after a second or so
     end,
 
     damage=function(self)

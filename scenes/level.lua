@@ -19,18 +19,21 @@ function level(nxt)
     emitter_timer = new_timer(time(), 1, function(self, now, level)
       level.emitters = emitters(level.phase)
     end),
+    pilot_spawn_timer = nil,
     cloud_map=wrapping_bg(0,0,32),
     -- TODO: Add easing between these.
     cloud_velocities={
       v2(0.1,0.25),
       v2(0.25,-0.1),
       v2(-0.5,-0.3),
+      v2(0, -1)
     },
     star_map=wrapping_bg(32,0,32),
     star_velocities={
       v2(0.2,0.4),
       v2(0.4,-0.2),
       v2(-1.2,-0.8),
+      v2(0, -2.5)
     },
 
     init = function(self)
@@ -43,6 +46,10 @@ function level(nxt)
       self.hero:update(dt)
       self.item_timer:update(now, self)
       self.emitter_timer:update(now, self)
+      if(self.pilot_spawn_timer != nil) then
+        self.pilot_spawn_timer:update(now, self)
+        print("pilot time update", 50, 50, 7)  
+      end
 
       foreach(self.emitters, function(e)
         e:update(dt, self)
@@ -76,23 +83,7 @@ function level(nxt)
         -- check for item collisions
         local itemgets = collision(self.hero.bounds, self.items)
         if #itemgets > 0 then
-          del(self.items, itemgets[1])
-          self.hero:grow()
-          self.hero.points += 1
-          -- chill out current emitters...
-          foreach(self.emitters, function(e)
-            e.bullcount = 0
-          end)
-          -- ... and set a timer to instantiate the next ones
-          self.emitter_timer:init(3, time())
-          -- also set a timer for the next item to show up
-          self.item_timer:init(7, time())
-          self.phase += 1
-        end
-
-        -- check if we should go to the next scene
-        if #self.items == 0 and #items == 0 then
-          nxt("complete")
+          self:on_item_hero_collision(itemgets[1])
         end
       end
 
@@ -110,6 +101,32 @@ function level(nxt)
         end
       end
     end,
+
+    on_item_hero_collision = function(self, item)
+      self.hero:grow()
+      del(self.items, item)
+      self:stop_emitters()
+      self.phase += 1
+      if #self.items == 0 and #items == 0 then
+        self.pilot_spawn_timer = new_timer(time(), 5, self.spawn_pilot)
+      else
+        self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
+        self.item_timer:init(7, time()) -- also set a timer for the next item to show up
+      end
+    end,
+
+    stop_emitters = function(self)
+      foreach(self.emitters, function(e)
+        e.bullcount = 0
+      end)
+    end,
+
+    spawn_pilot = function(self)
+      print("spawn pilot NOW", 50, 50, 7)  
+      -- spawn pilot
+      -- set timer to end level
+    end,
+
     draw = function(self)
       cls()
       self.cloud_map:draw()
