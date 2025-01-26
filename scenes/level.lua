@@ -32,6 +32,10 @@ function level(nxt)
       v2(0.4,-0.2),
       v2(-1.2,-0.8),
     },
+
+    init = function(self)
+      music_controller:play_song("zero_g")
+    end,
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
@@ -42,6 +46,10 @@ function level(nxt)
 
       foreach(self.emitters, function(e)
         e:update(dt, self)
+      end)
+
+      foreach(self.items, function(i)
+        i:update(dt)
       end)
 
       -- check collisions

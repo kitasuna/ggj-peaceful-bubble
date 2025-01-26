@@ -35,14 +35,16 @@ function player(spawnVec)
     end,
 
     update=function(self)
-
       if self.death_anim != nil then
         self.death_anim:update()
       end
-
-      if not self.alive then
-        return
+      if self.alive then
+        self:update_movement()
+        self.invincibility_timer -= 1
       end
+    end,
+
+    update_movement=function(self)
 
       local left = 0
       local right = 1
@@ -52,22 +54,29 @@ function player(spawnVec)
       local dx = 0
       local dy = 0
       if btn(up) then
-        self.bounds.pos.y -= 1
-        dy = -1
+        if(self.bounds.pos.y > 0) then
+          self.bounds.pos.y -= 1
+          dy = -1
+        end
       elseif btn(down) then
-        self.bounds.pos.y += 1
-        dy = 1
+        if(self.bounds.pos.y < 128) then
+          self.bounds.pos.y += 1
+          dy = 1
+        end
       end
+
       if btn(left) then
-        self.bounds.pos.x -= 1
-        dx = -1
+        if(self.bounds.pos.x > 0) then
+          self.bounds.pos.x -= 1
+          dx = -1
+        end
       elseif btn(right) then
-        self.bounds.pos.x += 1
-        dx = 1
+        if(self.bounds.pos.x < 128) then
+          self.bounds.pos.x += 1
+          dx = 1
+        end
       end
       self.wobubble:update(dx, dy)
-
-      self.invincibility_timer -= 1
     end,
 
     draw=function(self)
@@ -89,7 +98,7 @@ function player(spawnVec)
     end,
 
     die=function(self)
-      sfx(0)
+      sfx(3)
       self.death_anim = death_animation(self.bounds.pos)
       self.alive = false
     end,

@@ -27,6 +27,7 @@ poke(0x5f2e,1)
 #include wrapping_bg.lua
 #include death_animation.lua
 #include wobubble.lua
+#include music_controller.lua
 
 -- scenes
 #include scenes/title_scene.lua

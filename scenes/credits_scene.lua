@@ -2,6 +2,8 @@
 -- * nxt : callback - call to pass control to the next scene
 function credits_scene(nxt)
   return {
+    init = function(self)
+    end,
     update = function(self)
       if btnp(❎) then
         return nxt()

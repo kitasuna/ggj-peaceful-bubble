@@ -13,6 +13,7 @@ function transition_scn(cur,prv)
 	local t = 0
 	local t_0 = time()
 	return {
+		did_init = false,
 		update=function(scn)
 			local dt = time() - t_0
 			t_0 = time()
@@ -21,6 +22,10 @@ function transition_scn(cur,prv)
 			-- before running "update"
 			if t < dur and prv then
 				return
+			end
+			if (t > dur or not prv) and not scn.did_init then
+				cur:init()
+				scn.did_init = true
 			end
 			cur:update()
 		end,
