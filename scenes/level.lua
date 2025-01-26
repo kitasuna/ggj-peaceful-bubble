@@ -44,6 +44,10 @@ function level(nxt)
         e:update(dt, self)
       end)
 
+      foreach(self.items, function(i)
+        i:update(dt)
+      end)
+
       -- check collisions
       if(self.hero.alive) then
         -- check for bullet collisions
