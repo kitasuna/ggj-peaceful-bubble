@@ -6,6 +6,7 @@ function level(nxt)
     last_ts = time(),
     restart_timer=nil,
     phase = 1,
+    phase_t = 0,
     emitters = {},
     -- figure we'll pass the level/screen index here and for emitters (eventually)
     hero = player(v2(64,64)),
@@ -21,7 +22,6 @@ function level(nxt)
     end),
     pilot_spawn_timer = nil,
     cloud_map=wrapping_bg(0,0,32),
-    -- TODO: Add easing between these.
     cloud_velocities={
       v2(0.1,0.25),
       v2(0.25,-0.1),
@@ -46,6 +46,7 @@ function level(nxt)
       self.hero:update(dt)
       self.item_timer:update(now, self)
       self.emitter_timer:update(now, self)
+      self.phase_t += 1
       if(self.pilot_spawn_timer != nil) then
         self.pilot_spawn_timer:update(now, self)
         print("pilot time update", 50, 50, 7)  
@@ -88,9 +89,19 @@ function level(nxt)
       end
 
       -- self.phase can outgrow our velocities.
-      if self.phase <= #self.cloud_velocities then
+      if self.phase <= 1 then
         self.cloud_map:scroll(self.cloud_velocities[self.phase])
         self.star_map:scroll(self.star_velocities[self.phase])
+      elseif self.phase <= #self.cloud_velocities then
+        self.cloud_map:scroll(ease(self.cloud_velocities[self.phase-1],
+                                   self.cloud_velocities[self.phase],
+                                   self.phase_t/60))
+        self.star_map:scroll(ease(self.star_velocities[self.phase-1],
+                                  self.star_velocities[self.phase],
+                                  self.phase_t/60))
+      else
+        self.cloud_map:scroll(self.cloud_velocities[#self.cloud_velocities])
+        self.star_map:scroll(self.star_velocities[#self.star_velocities])
       end
       
       --restart timer
@@ -111,7 +122,9 @@ function level(nxt)
         self.pilot_spawn_timer = new_timer(time(), 5, self.spawn_pilot)
       else
         self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
-        self.item_timer:init(7, time()) -- also set a timer for the next item to show up
+        self.item_timer:init(7 + (self.phase * 2), time())
+        self.phase += 1
+        self.phase_t = 0
       end
     end,
 
