@@ -9,6 +9,7 @@ function player(spawnVec)
     bounds=bcirc(spawnVec, small_radius),
     points=0,
     size="small",
+    grow_time=0,  -- How long we've been growing.
     alive=true,
     invincibility_timer=0,
     death_anim=nil,
@@ -17,6 +18,10 @@ function player(spawnVec)
     wobubble=wobubble(),
 
     grow=function(self)
+      if self.size != "big" then
+        -- only reset easing if we're not already big
+        self.grow_time = 0
+      end
       self.bounds = bcirc(self.bounds.pos, big_radius)
       self.size = "big"
       sfx_controller:play_sound("bubble grow")
@@ -52,6 +57,7 @@ function player(spawnVec)
         self.death_anim:update()
       end
       if self.alive then
+        self.grow_time += 1
         self:update_movement()
         self.invincibility_timer -= 1
       end
@@ -106,7 +112,11 @@ function player(spawnVec)
         self.death_anim:draw()
       end
       if self.alive then
-        self.wobubble:draw(self.bounds.pos.x, self.bounds.pos.y, self.bounds.radius)
+        local r = self.bounds.radius
+        if self.size == "big" then
+          r = ease(small_radius, big_radius, self.grow_time/20)
+        end
+        self.wobubble:draw(self.bounds.pos.x, self.bounds.pos.y, r)
       end
     end,
 
