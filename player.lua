@@ -65,7 +65,6 @@ function player(spawnVec)
     end,
 
     update_movement=function(self)
-
       local left = 0
       local right = 1
       local up = 2
@@ -117,7 +116,7 @@ function player(spawnVec)
         if self.size == "big" then
           r = ease(small_radius, big_radius, self.grow_time/20)
         end
-        self.wobubble:draw(self.bounds.pos.x, self.bounds.pos.y, r)
+        self.wobubble:draw(self.bounds.pos, r)
       end
     end,
 
