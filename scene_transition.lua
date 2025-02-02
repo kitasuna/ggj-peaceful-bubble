@@ -23,7 +23,7 @@ function transition_scn(cur,prv)
 			if t < dur and prv then
 				return
 			end
-			if (t > dur or not prv) and not scn.did_init then
+			if (t >= dur or not prv) and not scn.did_init then
 				cur:init()
 				scn.did_init = true
 			end

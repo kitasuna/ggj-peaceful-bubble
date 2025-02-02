@@ -1,28 +1,15 @@
 -- level(nxt)
 -- * nxt : callback - call to end the level pass control to the next scene
 function level(nxt)
-  local items = items(1)
   return {
-    passing_ship = passing_ship(),
+    passing_ship = passing_ship(v2((20 + rnd(90)), 150)),
     last_ts = time(),
-    restart_timer=nil,
     phase = 1,
     phase_t = 0,
-    emitters = {},
-    -- figure we'll pass the level/screen index here and for emitters (eventually)
     hero = player(v2(64,64)),
+    emitters = {},
     items = {},
-    item_timer = new_timer(time(), 5, function(self, now, level)
-      -- add item to level...
-      add(level.items, items[1])
-      -- remove it from our list so we don't put it there again
-      del(items, items[1])
-    end),
     item_particles=nil,
-    emitter_timer = new_timer(time(), 1, function(self, now, level)
-      level.emitters = emitters(level.phase)
-    end),
-    pilot_spawn_timer = nil,
     pilot = nil,
     interphase = false,
     cloud_map=wrapping_bg(0,0,32),
@@ -39,30 +26,41 @@ function level(nxt)
       v2(-1.2,-0.8),
       v2(0, -2.5)
     },
+    timers = {},
 
     init = function(self)
       music_controller:play_song("zero_g")
+
+      self:add_timer(5, function()
+        self.items = { items(self.phase) }
+      end)
+
+      self:add_timer(1, function()
+        self.emitters = emitters(self, self.phase)
+      end)
     end,
 
     update = function(self)
       local now = time()
       local dt = now - self.last_ts
       self.last_ts = now
-      self.hero:update(dt)
-      self.item_timer:update(now, self)
-      self.emitter_timer:update(now, self)
       self.phase_t += 1
-      self.passing_ship:update()
-      if(self.pilot_spawn_timer != nil) then
-        self.pilot_spawn_timer:update(now, self)
+      
+      self.hero:update(dt)
+      
+      if self.passing_ship != nil then
+        self.passing_ship:update(dt)
+        if self.passing_ship.pos.y < -50 then
+          self.passing_ship = nil
+        end
       end
-      if(self.pilot != nil) then
-        self.pilot:update(dt, self)
+      if self.pilot != nil then
+        self.pilot:update(dt)
       end
 
       local total_bulls = 0
       foreach(self.emitters, function(e)
-        e:update(dt, self.hero.bounds.pos)
+        e:update(dt)
         total_bulls += e.bullcount
         total_bulls += #e.bulls
       end)
@@ -82,40 +80,8 @@ function level(nxt)
       end
 
       -- check collisions
-      if(self.hero.alive) then
-        -- check for bullet collisions
-        local allbulls = {}
-        foreach(self.emitters, function(e)
-          foreach(e.bulls, function(b)
-            add(allbulls, b)
-            end
-          )
-        end)
-        local bullet_collisions = collision(self.hero.bounds, allbulls)
-        if #bullet_collisions > 0 then
-          foreach(self.emitters, function(e)
-            del(e.bulls, bullet_collisions[1])
-          end)
-          self.hero:damage()
-          if(not self.hero.alive) then
-            self.restart_timer = 80
-          end
-        end
-
-        -- check for item collisions
-        local itemgets = collision(self.hero.bounds, self.items)
-        if #itemgets > 0 then
-          -- ej
-          self:on_item_hero_collision(itemgets[1])
-        end
-
-        if self.pilot != nil then
-          -- check for pilot collision / end game
-          local pilotgets = collision(self.hero.bounds, {self.pilot})
-          if #pilotgets > 0 then
-            nxt("complete")
-          end
-        end
+      if self.hero.alive then
+        self:check_collisions()
       end
 
       -- self.phase can outgrow our velocities.
@@ -133,12 +99,54 @@ function level(nxt)
         self.cloud_map:scroll(self.cloud_velocities[#self.cloud_velocities])
         self.star_map:scroll(self.star_velocities[#self.star_velocities])
       end
-      
-      --restart timer
-      if self.restart_timer != nil then
-        self.restart_timer -= 1
-        if self.restart_timer <= 0 then
-          return nxt("dead")
+
+      -- update timers
+      foreach(self.timers, function(t)
+        t:update(dt)
+      end)
+    end,
+
+    add_timer = function(self, ttl, f)
+      add(self.timers, new_timer(ttl, function(timer)
+        f()
+        del(self.timers, timer)
+      end))
+    end,
+
+    check_collisions = function(self)
+      -- check for bullet collisions
+      local allbulls = {}
+      foreach(self.emitters, function(e)
+        foreach(e.bulls, function(b)
+          add(allbulls, b)
+        end)
+      end)
+
+      local bullet_collisions = collision(self.hero.bounds, allbulls)
+      if #bullet_collisions > 0 then
+        foreach(self.emitters, function(e)
+          del(e.bulls, bullet_collisions[1])
+        end)
+        self.hero:damage()
+        -- schedule a timer to end the level
+        if not self.hero.alive then
+          self:add_timer(80/60, function()
+            nxt("dead")
+          end)
+        end
+      end
+
+      -- check for item collisions
+      local itemgets = collision(self.hero.bounds, self.items)
+      if #itemgets > 0 then
+        self:on_item_hero_collision(itemgets[1])
+      end
+
+      if self.pilot != nil then
+        -- check for pilot collision / end game
+        local pilotgets = collision(self.hero.bounds, {self.pilot})
+        if #pilotgets > 0 then
+          nxt("complete")
         end
       end
     end,
@@ -155,11 +163,20 @@ function level(nxt)
       self.phase += 1
       self.interphase = false
       self.phase_t = 0
-      if #self.items == 0 and #items == 0 then
-        self.pilot_spawn_timer = new_timer(time(), 1, self.spawn_pilot)
+      local now = time()
+      if #self.items == 0 and self.phase == 4 then
+        self:add_timer(1, function()
+          self:spawn_pilot()
+        end)
       else
-        self.emitter_timer:init(3, time()) -- set a timer to instantiate the next ones
-        self.item_timer:init(7 + (self.phase * 2), time())
+        -- schedule item spawn
+        self:add_timer(7 + (self.phase * 2), function()
+          self.items = { items(self.phase) }
+        end)
+        -- schedule new emitters
+        self:add_timer(3, function()
+          self.emitters = emitters(self, self.phase)
+        end)
       end
     end,
 
@@ -169,7 +186,7 @@ function level(nxt)
       end)
     end,
 
-    spawn_pilot = function(callTimer, now, self)
+    spawn_pilot = function(self)
       pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
       -- spawn the pilot
       self.pilot = new_pilot(bcirc(v2(pilot_x,-32), 3))
@@ -179,7 +196,11 @@ function level(nxt)
       cls()
       self.cloud_map:draw()
       self.star_map:draw()
-      self.passing_ship:draw()
+
+      if self.passing_ship != nil then
+        self.passing_ship:draw()
+      end
+
       foreach(self.emitters, function(e)
         e:draw()
       end)

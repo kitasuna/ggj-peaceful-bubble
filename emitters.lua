@@ -1,6 +1,6 @@
 -- Requires cycler, vector2.
 
-function new_emitter(pos, vel, bullcount, cooldown, bullet_f)
+function new_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
   local e = {
     pos=pos,
     vel=vel,
@@ -27,7 +27,7 @@ function new_emitter(pos, vel, bullcount, cooldown, bullet_f)
           del(self.bulls, b)
         end
       end
-      self.timer:update(time(), target)
+      self.timer:update(dt)
       self.cycler:update(dt)
       self.pos += dt * self.vel
       -- when the emitter reaches the edge of the screen,
@@ -39,14 +39,9 @@ function new_emitter(pos, vel, bullcount, cooldown, bullet_f)
         self.vel.y = -self.vel.y
       end
     end,
-    bulls = {},
-  }
-
-  e.timer = new_timer(
-    0,
-    0,
-    function(t,now,target)
+    fire = function(e)
       local new_bulls = {}
+      local target = level.hero.bounds.pos
       if e.bullet_f == nil then
         new_bulls = new_aimed_bullets(
           e.bullcount,
@@ -64,17 +59,22 @@ function new_emitter(pos, vel, bullcount, cooldown, bullet_f)
           e.bullet_f
         )
       end
-
       foreach(new_bulls, function(b)
         add(e.bulls, b)
       end)
-
       e.rot = (e.rot + 15) % 360
-      t:add(e.cooldown)
-    end
-    )
 
-  e.timer:init(1.5, time())
+      -- schedule the next shot burst
+      e.timer = new_timer(e.cooldown, function()
+        e:fire()
+      end)
+    end,
+    bulls = {},
+  }
+  -- schedule the first shot burst
+  e.timer = new_timer(1.5, function()
+    e:fire()
+  end)
 
   return e
 end
@@ -89,18 +89,18 @@ function waves(angle, idx)
 end
 
 
-function emitters(phase)
+function emitters(level, phase)
   local es = {
     {
-      new_emitter(v2(64, -8), 60 * v2(0.4, 0), 1, 1),
-      new_emitter(v2(-8, 64), 60 * v2(0, 0.4), 1, 1.1),
+      new_emitter(level, v2(64, -8), 60 * v2(0.4, 0), 1, 1),
+      new_emitter(level, v2(-8, 64), 60 * v2(0, 0.4), 1, 1.1),
     },
     {
-      new_emitter(v2(64, -8), 60 * v2(-0.4, 0), 2, 0.6),
-      new_emitter(v2(136, 64), 60 * v2(0, 0.4), 2, 0.7),
+      new_emitter(level, v2(64, -8), 60 * v2(-0.4, 0), 2, 0.6),
+      new_emitter(level, v2(136, 64), 60 * v2(0, 0.4), 2, 0.7),
     },
     {
-      new_emitter(v2(130, 64), 60 * v2(0, 0), 10, 0.4, bendy),
+      new_emitter(level, v2(130, 64), 60 * v2(0, 0), 10, 0.4, bendy),
     },
   }
   return es[phase]

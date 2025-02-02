@@ -1,29 +1,18 @@
-function passing_ship()
-  local speed = 0.5
-  return{
-
-    pos = v2((20 + rnd(90)), 150),
+function passing_ship(pos)
+  return {
+    pos = pos,
+    vel = v2(0,-30),
     done=false,
     flame_timer=-5,
-
-    update = function(self)
-      if self.done then
-        return
-      end
+    update = function(self,dt)
       self.flame_timer += 1
       if self.flame_timer > 5 then
         self.flame_timer = -5
       end
-      self.pos.y -= speed
-      if self.pos.y < -50 then
-        self.done = true
-      end
+      self.pos += dt * self.vel
     end,
 
     draw = function(self)
-      if self.done then
-        return
-      end
       spr(198, self.pos.x, self.pos.y, 2, 2)
       if self.flame_timer > 0 then
         spr(230, self.pos.x, self.pos.y + 16, 2, 1)
@@ -31,6 +20,5 @@ function passing_ship()
         spr(246, self.pos.x, self.pos.y + 16, 2, 1)
       end
     end,
-
   }
 end
