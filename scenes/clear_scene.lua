@@ -14,7 +14,7 @@ function clear_scene(nxt)
   return {
     time_on_current_thought = 0,
     text = bubbletext(thoughts[1], v2(10, 10)),
-    bubble = floating_bubble(56, 56, 5, true),
+    bubble = floating_bubble(v2(64,64), 5, true),
     current_thought_idx = 1,
 
     init = function(self)

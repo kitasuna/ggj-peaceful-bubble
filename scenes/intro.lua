@@ -17,7 +17,7 @@ function intro(nxt)
     current_thought_time = 0,
     max_time_for_current_thought = 0,
     text = bubbletext(thoughts[1], v2(10, 10)),
-    bubble = floating_bubble(56, 56, 5, false),
+    bubble = floating_bubble(v2(64,64), 5, false),
     current_thought_id = 1,
     cloud_map=wrapping_bg(0,0,32),
     star_map=wrapping_bg(32,0,32),

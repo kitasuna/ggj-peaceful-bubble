@@ -2,8 +2,7 @@
 -- * nxt : callback - call to pass control to the next scene
 function title_scene(nxt)
   return {
-    bubble = floating_bubble(56, 56, 5),
-    
+    bubble = floating_bubble(v2(64,64), 5),
     cloud_map=wrapping_bg(0,0,32),
     star_map=wrapping_bg(32,0,32),
     cloud_v=v2(0.1,0.25),

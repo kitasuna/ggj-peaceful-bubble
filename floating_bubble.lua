@@ -1,28 +1,16 @@
-function floating_bubble(x, y, max_deviation, with_pilot)
-  local bubble_going_up = true
-  local ymid = y
+function floating_bubble(pos, dy, with_pilot)
   return {
     t = 0,
     with_pilot = with_pilot,
     update = function(self)
       self.t += 1
-      if bubble_going_up then
-        y -= 0.1
-      else
-        y += 0.1
-      end
-      if abs(y - ymid) > max_deviation then
-        bubble_going_up = not bubble_going_up
-      end
-      return nil
     end,
-
     draw = function(self)
-      spr(2, x, y, 2, 2)
+      local x,y = pos.x, pos.y + dy * sin(self.t/180)
+      spr(2, x-8, y-8, 2, 2)
       if self.with_pilot then
-        spr(200, x+4, y+5)
+        spr(200, x-4, y-3)
       end
     end,
-
   }
 end

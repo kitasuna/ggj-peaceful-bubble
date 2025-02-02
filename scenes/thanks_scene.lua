@@ -2,7 +2,7 @@
 -- * nxt : callback - call to pass control to the next scene
 function thanks_scene(nxt)
   return {
-    bubble = floating_bubble(56, 60, 5, true),
+    bubble = floating_bubble(v2(64,68), 5, true),
     init = function(self)
       music_controller:stop()
     end,
