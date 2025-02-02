@@ -40,7 +40,6 @@ poke(0x5f2e,1)
 #include scenes/title_scene.lua
 #include scenes/intro.lua
 #include scenes/level.lua
-#include scenes/death_scene.lua
 #include scenes/clear_scene.lua
 #include scenes/credits_scene.lua
 #include scenes/thanks_scene.lua
