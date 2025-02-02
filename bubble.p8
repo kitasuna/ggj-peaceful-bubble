@@ -15,13 +15,17 @@ altpal()
 poke(0x5f2e,1)
 
 #include _init.lua
-#include utils.lua
-#include flow.lua
+
+-- library code
+#include lib/utils.lua
+#include lib/flow.lua
+#include lib/vector2.lua
+#include lib/bcirc.lua
+#include lib/timer.lua
+#include lib/collision.lua
+
+-- game code
 #include scene_transition.lua
-#include vector2.lua
-#include timer.lua
-#include bcirc.lua
-#include collision.lua
 #include bullets.lua
 #include items.lua
 #include emitters.lua

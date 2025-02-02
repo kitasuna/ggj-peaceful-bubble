@@ -3,7 +3,7 @@
 -- bcirc hero, bcirc bullets[]
 function collision(hero, bullets)
   local collisions = {}
-  for id, bullet in pairs(bullets) do
+  for bullet in all(bullets) do
     if hero:colliding(bullet) then
       add(collisions, bullet)
     end
