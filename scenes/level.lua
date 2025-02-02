@@ -62,7 +62,7 @@ function level(nxt)
 
       local total_bulls = 0
       foreach(self.emitters, function(e)
-        e:update(dt, self)
+        e:update(dt, self.hero.bounds.pos)
         total_bulls += e.bullcount
         total_bulls += #e.bulls
       end)
@@ -138,7 +138,7 @@ function level(nxt)
       if self.restart_timer != nil then
         self.restart_timer -= 1
         if self.restart_timer <= 0 then
-          return nxt("dead") -- todo: restart level
+          return nxt("dead")
         end
       end
     end,
@@ -181,10 +181,10 @@ function level(nxt)
       self.star_map:draw()
       self.passing_ship:draw()
       foreach(self.emitters, function(e)
-        e:draw(dt)
+        e:draw()
       end)
       foreach(self.items, function(i)
-        i:draw(dt)
+        i:draw()
       end)
       if self.item_particles != nil then
         self.item_particles:draw()
@@ -196,7 +196,6 @@ function level(nxt)
       end
 
       self.hero:draw()
-
     end,
   }
 end
