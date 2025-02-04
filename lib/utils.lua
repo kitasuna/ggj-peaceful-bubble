@@ -30,6 +30,10 @@ function merge(t0, t1)
 	return t2
 end
 
+function id(x)
+  return x
+end
+
 function const(x)
 	return function()
 		return x
@@ -52,21 +56,32 @@ function once(f)
 	end
 end
 
+function lerp(a,b)
+	return function(t)
+		return a + t*(b-a)
+	end
+end
+
+function rrnd(lo,hi)
+	return lerp(lo,hi)(rnd())
+end
+
+
 function ease(a, b, t)
   -- clamp to [0,1]
-  t = min(1, max(0, t))
+  t = mid(0,t,1)
   return a + (b - a) * t
 end
 
 function cube_ease(a, b, t)
   -- clamp to [0,1]
-  t = min(1, max(0, t))
+  t = mid(0,t,1)
   return a + (b - a) * (1-(1-t)^3)
 end
 
 function sine_ease(a, b, t)
   -- clamp to [0,1]
-  t = min(1, max(0, t))
+  t = mid(0,t,1)
   -- sin is inverted for screen space
   return a + (b - a) * sin(-t/4)
 end

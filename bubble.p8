@@ -18,6 +18,7 @@ poke(0x5f2e,1)
 
 -- library code
 #include lib/utils.lua
+#include lib/anim.lua
 #include lib/flow.lua
 #include lib/vector2.lua
 #include lib/bcirc.lua

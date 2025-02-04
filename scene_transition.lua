@@ -9,7 +9,7 @@ function transition_flow(f)
 end
 
 function transition_scn(cur,prv)
-	local dur = 0.5
+	local dur = bubble_wipe.dur
 	local t = 0
 	local t_0 = time()
 	return {
@@ -20,10 +20,10 @@ function transition_scn(cur,prv)
 			t += dt
 			-- wait for transition to finish
 			-- before running "update"
-			if t < dur and prv then
+			if t < dur/2 and prv then
 				return
 			end
-			if (t >= dur or not prv) and not scn.did_init then
+			if (t >= dur/2 or not prv) and not scn.did_init then
 				cur:init()
 				scn.did_init = true
 			end
@@ -35,19 +35,81 @@ function transition_scn(cur,prv)
 				return
 			end
 			-- draw a "wipe" transition
-			if t < dur then
+			if t < dur/2 then
 				prv:draw()
-				local fac = t/dur
-				local r = 92 * fac
-				circfill(64,64,r,10)
-			elseif t > dur and t <= 2*dur then
+				bubble_wipe.at(t)()
+			elseif t > dur/2 and t <= dur then
 				cur:draw()
-				local fac = (t-dur)/dur
-				local r = 92 * (1-fac)
-				circfill(64,64,r,10)
-			elseif t > 2*dur then
+				bubble_wipe.at(t)()
+			elseif t > dur then
 				cur:draw()
 			end
 		end,
 	}
 end
+
+do
+	local function draw_all(tbl)
+		return function()
+			for d in all(tbl) do
+				d()
+			end
+		end
+	end
+	
+	local function bubble(x,y,r)
+		return anim.linear
+		:ease(function(t)
+			return t*t
+		end)
+		:map(lerp(128+48,-48))
+		:map(function(dy)
+			return function()
+				circfill(x,y+dy,r,14)
+			end
+		end)
+	end
+	
+	local function bubble_group(r,n)
+		local list = {}
+		for i=1,n do
+			list[i] = bubble(
+				rrnd(-8,136),
+				rrnd(-48+r,48-r),
+				r
+			):delay(rnd())
+		end
+		return anim.from_list(list)
+			:map(draw_all)
+	end
+	
+	local small_bubbles  = bubble_group(8,16)
+	local medium_bubbles = bubble_group(24,8)
+	local large_bubbles  = bubble_group(48,3)
+	local giant_bubble   = bubble(64,64,90):delay(0.75)
+	
+	-- layer a bunch of bubbles of different sizes
+	bubble_wipe = anim.from_list({
+		small_bubbles
+			:scale(0.9),
+		medium_bubbles
+			:scale(0.8)
+			:delay(0.4),
+		large_bubbles
+			:scale(0.7)
+			:delay(0.7),
+		giant_bubble
+			:scale(0.5)
+			:delay(0.6),
+		medium_bubbles
+			:scale(0.5)
+			:delay(1),
+		small_bubbles
+			:scale(0.8)
+			:delay(1),
+	})
+	:map(draw_all)
+	
+	bubble_wipe = bubble_wipe
+		:scale(1.5/bubble_wipe.dur)
+	end
