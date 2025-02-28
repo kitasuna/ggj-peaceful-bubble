@@ -41,7 +41,7 @@ function new_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
     end,
     fire = function(e)
       local new_bulls = {}
-      local target = level.hero.bounds.pos
+      local target = level.hero.pos
       if e.bullet_f == nil then
         new_bulls = new_aimed_bullets(
           e.bullcount,

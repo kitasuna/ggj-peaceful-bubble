@@ -118,7 +118,7 @@ function level(nxt)
         end)
       end)
 
-      local bullet_collisions = collision(self.hero.bounds, allbulls)
+      local bullet_collisions = collision(self.hero, allbulls)
       if #bullet_collisions > 0 then
         foreach(self.emitters, function(e)
           del(e.bulls, bullet_collisions[1])
@@ -133,14 +133,14 @@ function level(nxt)
       end
 
       -- check for item collisions
-      local itemgets = collision(self.hero.bounds, self.items)
+      local itemgets = collision(self.hero, self.items)
       if #itemgets > 0 then
         self:on_item_hero_collision(itemgets[1])
       end
 
       if self.pilot != nil then
         -- check for pilot collision / end game
-        local pilotgets = collision(self.hero.bounds, {self.pilot})
+        local pilotgets = collision(self.hero, {self.pilot})
         if #pilotgets > 0 then
           nxt("complete")
         end
@@ -183,9 +183,9 @@ function level(nxt)
     end,
 
     spawn_pilot = function(self)
-      pilot_x = self.hero.bounds.pos.x < 64 and 96 or 32  
+      pilot_x = self.hero.pos.x < 64 and 96 or 32  
       -- spawn the pilot
-      self.pilot = new_pilot(bcirc(v2(pilot_x,-32), 3))
+      self.pilot = new_pilot(v2(pilot_x,-32))
     end,
 
     draw = function(self)

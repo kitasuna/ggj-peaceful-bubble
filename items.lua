@@ -1,7 +1,8 @@
-function new_item(bounds, end_pos)
-  local item = {
+function new_item(start_pos, end_pos)
+  return {
     t=0,
-    start_pos=bounds.pos,
+    pos=start_pos,
+    start_pos=start_pos,
     end_pos=end_pos,
     draw = function(self)
       spr(self.frames[self.current_frame], self.pos.x-8, self.pos.y-8, 2, 2)
@@ -24,17 +25,19 @@ function new_item(bounds, end_pos)
         end
       end
     end,
+    collider = function(self)
+      return circle_collider(self.pos, 7)
+    end
   }
-  return merge(item, bounds)
 end
 
 function items(phase)
   local is = {
     -- TODO: Do this math xD The end_pos are calculated from the old
     -- velocity-based code + how many frames it ran.
-    new_item(bcirc(v2(136,136), 7), v2(136,136)+v2(-0.25,-0.30)*180),
-    new_item(bcirc(v2(136,-8), 7), v2(136, -8)+v2(-0.30,0.20)*180),
-    new_item(bcirc(v2(-8,-8), 7), v2(-8,-8)+v2(0.55,0.35)*120),
+    new_item(v2(136,136), v2(136,136) + v2(-0.25,-0.30)*180),
+    new_item(v2(136,-8), v2(136, -8) + v2(-0.30,0.20)*180),
+    new_item(v2(-8,-8), v2(-8,-8) + v2(0.55,0.35)*120),
   }
   return is[phase]
 end

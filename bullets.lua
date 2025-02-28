@@ -1,7 +1,7 @@
--- Requires bcirc, vector2.
+-- Requires collision, vector2.
 
 function new_bullet(pos,vel)
-  return merge({
+  return {
     pos = pos,
     vel = vel,
     draw=function(b)
@@ -10,7 +10,10 @@ function new_bullet(pos,vel)
     update=function(b,dt)
       b.pos += dt * b.vel
     end,
-  }, bcirc(pos,2))
+    collider=function(b)
+      return circle_collider(b.pos,2)
+    end
+  }
 end
 
 -- function new_bullets(count, start, target, base_angle, rot_f)

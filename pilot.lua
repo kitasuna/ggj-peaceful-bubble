@@ -1,8 +1,9 @@
-function new_pilot(bounds)
-  local pilot = {
+function new_pilot(pos)
+  return {
     t=0,
-    start_pos=bounds.pos,
-    end_pos=bounds.pos+v2(0,60),
+    pos=pos,
+    start_pos=pos,
+    end_pos=pos+v2(0,60),
     draw = function(self)
       -- draw ship
       spr(198, self.pos.x-24, self.pos.y+8, 2, 2)
@@ -27,6 +28,8 @@ function new_pilot(bounds)
         end
       end
     end,
+    collider=function(self)
+      return circle_collider(self.pos, 3)
+    end,
   }
-  return merge(pilot, bounds)
 end

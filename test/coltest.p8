@@ -1,19 +1,24 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include vector2.lua
-#include bcirc.lua 
-#include collision.lua
-#include player.lua
+#include ../lib/vector2.lua
+#include ../lib/collision.lua
+#include ../player.lua
 
-local hero = bcirc(v2(0,0),2)
+local hero = circle_collider(v2(0,0),2)
 local bullets = {
-  bcirc(v2(0,4),2),
-  bcirc(v2(3,3),3),
-  bcirc(v2(0,0),1),
+  circle_collider(v2(0,4),2),
+  circle_collider(v2(3,3),3),
+  circle_collider(v2(0,0),1),
 }
 
-local collisions = collision(hero, bullets)
+local collisions = {}
+for i,bullet in ipairs(bullets) do
+  if collider_overlaps(hero, bullet) then
+    add(collisions, i)
+  end
+end
+
 for c in all(collisions) do
   print(c)
 end

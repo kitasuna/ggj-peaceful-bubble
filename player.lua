@@ -1,12 +1,10 @@
--- Player movement. Requires bcirc.lua.
+-- Player movement. Requires collision.lua
 
--- bcirc bounds
-
-function player(spawnVec)
+function player(pos)
   local small_radius=4
   local big_radius=8
   return {
-    bounds=bcirc(spawnVec, small_radius),
+    pos=pos,
     points=0,
     size="small",
     grow_time=0,  -- How long we've been growing.
@@ -22,7 +20,6 @@ function player(spawnVec)
         -- only reset easing if we're not already big
         self.grow_time = 0
       end
-      self.bounds = bcirc(self.bounds.pos, big_radius)
       self.size = "big"
       sfx_controller:play_sound("bubble grow")
       self.points += 1
@@ -41,9 +38,8 @@ function player(spawnVec)
     end,
 
     shrink=function(self)
-      self.bounds = bcirc(self.bounds.pos, small_radius)
       self.size = "small"
-      self.shrink_particles = particles(46, self.bounds.pos, 4, 2)
+      self.shrink_particles = particles(46, self.pos, 4, 2)
       sfx_controller:play_sound("bubble shrink")
     end,
 
@@ -73,25 +69,25 @@ function player(spawnVec)
       local dx = 0
       local dy = 0
       if btn(up) then
-        if(self.bounds.pos.y > 0) then
-          self.bounds.pos.y -= 1
+        if(self.pos.y > 0) then
+          self.pos.y -= 1
           dy = -1
         end
       elseif btn(down) then
-        if(self.bounds.pos.y < 128) then
-          self.bounds.pos.y += 1
+        if(self.pos.y < 128) then
+          self.pos.y += 1
           dy = 1
         end
       end
 
       if btn(left) then
-        if(self.bounds.pos.x > 0) then
-          self.bounds.pos.x -= 1
+        if(self.pos.x > 0) then
+          self.pos.x -= 1
           dx = -1
         end
       elseif btn(right) then
-        if(self.bounds.pos.x < 128) then
-          self.bounds.pos.x += 1
+        if(self.pos.x < 128) then
+          self.pos.x += 1
           dx = 1
         end
       end
@@ -112,18 +108,24 @@ function player(spawnVec)
         self.death_anim:draw()
       end
       if self.alive then
-        local r = self.bounds.radius
+        local r
         if self.size == "big" then
           r = ease(small_radius, big_radius, self.grow_time/20)
+        else
+          r = small_radius
         end
-        self.wobubble:draw(self.bounds.pos, r)
+        self.wobubble:draw(self.pos, r)
       end
+    end,
+
+    collider=function(self)
+      return circle_collider(self.pos, self.size == "big" and big_radius or small_radius)
     end,
 
     die=function(self)
       sfx_controller:play_sound("bubble pop")
-      self.death_anim = death_animation(self.bounds.pos - v2(self.bounds.radius, self.bounds.radius))
-      self.death_particles = particles(46, self.bounds.pos, 3, 1)
+      self.death_anim = death_animation(self.pos)
+      self.death_particles = particles(46, self.pos, 3, 1)
       self.alive = false
     end,
   }

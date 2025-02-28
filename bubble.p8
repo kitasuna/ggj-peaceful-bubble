@@ -22,7 +22,6 @@ poke(0x5f2e,1)
 #include lib/draw.lua
 #include lib/flow.lua
 #include lib/vector2.lua
-#include lib/bcirc.lua
 #include lib/timer.lua
 #include lib/collision.lua
 
