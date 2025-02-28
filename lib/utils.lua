@@ -46,6 +46,15 @@ function compose(f,g)
 	end
 end
 
+function suspend(f)
+	return function(...)
+		local args = {...}
+		return function()
+			f(unpack(args))
+		end
+	end
+end
+
 function once(f)
 	local done
 	return function(val)

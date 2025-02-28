@@ -13,6 +13,13 @@ anim_meta = {
 				a.dur
 			)
 		end,
+		apply=function(a,a2)
+			return anim.create(function(t)
+				local x = a.at(t)
+				local f = a2.at(t)
+				return f(x)
+			end, min(a.dur, a2.dur))
+		end,
 		concat=function(a,a2)
 			return anim.create(
 				function(t)
@@ -48,6 +55,14 @@ anim_meta = {
 				a.dur+d
 			)
 		end,
+		loop=function(a)
+			return anim.create(function(t)
+				return a.at(t%a.dur)
+			end, 32000)
+		end,
+		thru=function(a,f)
+			return f(a)
+		end
 	}
 }
 
@@ -83,3 +98,17 @@ end
 
 anim.from_tbl  = anim.from_group(pairs)
 anim.from_list = anim.from_group(ipairs)
+
+function anim.concat(tbl)
+	local ret	= anim.const(nil,0)
+	for a in all(tbl) do
+		ret = ret:concat(a)
+	end
+	return ret
+end
+
+function anim.from_frames(fs)
+  return anim.create(function(t)
+    return fs[1 + (t\1) % #fs]
+  end, #fs)
+end

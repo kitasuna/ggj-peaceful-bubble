@@ -1,8 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
--- What is it like to be a bubble?
--- A meta-interrogation of the physiological patterns, intra-structural semantics, and conscious fabrics of nothingness pockets. With BULLET HELL ACTION! 🔥
+--ship-anim
 
 -- putting this before the includes so editor palette is changed for artists
 -- (who may not have the .lua includes).
@@ -14,43 +13,88 @@ end
 altpal()
 poke(0x5f2e,1)
 
-#include _init.lua
-
 -- library code
-#include lib/utils.lua
-#include lib/anim.lua
-#include lib/draw.lua
-#include lib/flow.lua
-#include lib/vector2.lua
-#include lib/bcirc.lua
-#include lib/timer.lua
-#include lib/collision.lua
+#include ../lib/utils.lua
+#include ../lib/anim.lua
+#include ../lib/draw.lua
+#include ../lib/vector2.lua
 
 -- game code
-#include scene_transition.lua
-#include bullets.lua
-#include items.lua
-#include emitters.lua
-#include player.lua
-#include pilot.lua
-#include floating_bubble.lua
-#include texteffects.lua
-#include wrapping_bg.lua
-#include death_animation.lua
-#include wobubble.lua
-#include music_controller.lua
-#include sfx_controller.lua
-#include particles.lua
-#include passing_ship.lua
+#include ../wrapping_bg.lua
+#include ../passing_ship.lua
 
--- scenes
-#include scenes/title_scene.lua
-#include scenes/intro.lua
-#include scenes/level.lua
-#include scenes/clear_scene.lua
-#include scenes/credits_scene.lua
-#include scenes/thanks_scene.lua
+-- game loop
+function _init()
+end
 
+function _update60()
+  scn:update()
+end
+
+function _draw()
+  scn:draw()
+end
+
+
+-->8
+scn = {
+  passing_ship = passing_ship(),
+  last_ts = time(),
+  phase = 1,
+  phase_t = 0,
+
+  cloud_map=wrapping_bg(0,0,32),
+  cloud_velocities={
+    v2(0.1,0.25),
+    v2(0.25,-0.1),
+    v2(-0.5,-0.3),
+    v2(0, -1)
+  },
+  star_map=wrapping_bg(32,0,32),
+  star_velocities={
+    v2(0.2,0.4),
+    v2(0.4,-0.2),
+    v2(-1.2,-0.8),
+    v2(0, -2.5)
+  },
+
+  update = function(self)
+    local now = time()
+    local dt = now - self.last_ts
+    self.last_ts = now
+    self.phase_t += 1
+    
+    self.passing_ship:update(dt)
+
+    -- reset
+    if btnp(❎) then
+    	self.passing_ship.t = 0
+    end
+    
+    -- self.phase can outgrow our velocities.
+    if self.phase <= 1 then
+      self.cloud_map:scroll(self.cloud_velocities[self.phase])
+      self.star_map:scroll(self.star_velocities[self.phase])
+    elseif self.phase <= #self.cloud_velocities then
+      self.cloud_map:scroll(ease(self.cloud_velocities[self.phase-1],
+                                 self.cloud_velocities[self.phase],
+                                 self.phase_t/60))
+      self.star_map:scroll(ease(self.star_velocities[self.phase-1],
+                                self.star_velocities[self.phase],
+                                self.phase_t/60))
+    else
+      self.cloud_map:scroll(self.cloud_velocities[#self.cloud_velocities])
+      self.star_map:scroll(self.star_velocities[#self.star_velocities])
+    end
+  end,
+
+  draw = function(self)
+    cls()
+    self.cloud_map:draw()
+    self.star_map:draw()
+    self.passing_ship:draw()
+  end,
+}
 
 __gfx__
 0000000000222f000000022222200000005555000000007777000000000010777701000000000071170000000000071ff1700000000071ffff17000000000000

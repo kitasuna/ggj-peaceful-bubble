@@ -2,7 +2,7 @@
 -- * nxt : callback - call to end the level pass control to the next scene
 function level(nxt)
   return {
-    passing_ship = passing_ship(v2((20 + rnd(90)), 150)),
+    passing_ship = passing_ship(),
     last_ts = time(),
     phase = 1,
     phase_t = 0,
@@ -48,12 +48,8 @@ function level(nxt)
       
       self.hero:update(dt)
       
-      if self.passing_ship != nil then
-        self.passing_ship:update(dt)
-        if self.passing_ship.pos.y < -50 then
-          self.passing_ship = nil
-        end
-      end
+      self.passing_ship:update(dt)
+      
       if self.pilot != nil then
         self.pilot:update(dt)
       end
@@ -196,10 +192,8 @@ function level(nxt)
       cls()
       self.cloud_map:draw()
       self.star_map:draw()
-
-      if self.passing_ship != nil then
-        self.passing_ship:draw()
-      end
+      
+      self.passing_ship:draw()
 
       foreach(self.emitters, function(e)
         e:draw()
