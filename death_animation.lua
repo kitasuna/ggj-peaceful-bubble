@@ -1,3 +1,11 @@
+function limit_text_pos(v, text)
+  local mx,my = 2*#text + 8, 8
+  return v2(
+    mid(mx, v.x, 128-mx) - 2*#text,
+    mid(my, v.y, 128-my)
+  )
+end
+
 function death_animation(pos)
 
   local death_thoughts = {
@@ -7,6 +15,7 @@ function death_animation(pos)
     "i am a failure",
   }
   local thought_text = rnd(death_thoughts)
+  local thought_pos = limit_text_pos(pos, thought_text)
 
   return{
 
@@ -15,7 +24,7 @@ function death_animation(pos)
     current_sprite_id=1,
     animation_done=false,
     frames_per_sprite=3,
-    thought=bubbletext(thought_text, pos-v2(0,8)),
+    thought = bubbletext(thought_text, thought_pos),
 
     update=function(self)
       self.thought:update()
