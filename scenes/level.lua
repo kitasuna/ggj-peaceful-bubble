@@ -17,6 +17,7 @@ function level(nxt)
       v2(0.1,0.25),
       v2(0.25,-0.1),
       v2(-0.5,-0.3),
+      v2(0.5,-0.3),
       v2(0, -1)
     },
     star_map=wrapping_bg(32,0,32),
@@ -24,6 +25,7 @@ function level(nxt)
       v2(0.2,0.4),
       v2(0.4,-0.2),
       v2(-1.2,-0.8),
+      v2(1.2,-0.8),
       v2(0, -2.5)
     },
     timers = {},
@@ -57,8 +59,7 @@ function level(nxt)
       local total_bulls = 0
       foreach(self.emitters, function(e)
         e:update(dt)
-        total_bulls += e.bullcount
-        total_bulls += #e.bulls
+        total_bulls += #(e.bulls or {})
       end)
 
       if total_bulls == 0 and self.interphase then
@@ -160,7 +161,7 @@ function level(nxt)
       self.interphase = false
       self.phase_t = 0
       local now = time()
-      if #self.items == 0 and self.phase == 4 then
+      if #self.items == 0 and self.phase == 5 then
         self:add_timer(1, function()
           self:spawn_pilot()
         end)
@@ -178,7 +179,7 @@ function level(nxt)
 
     stop_emitters = function(self)
       foreach(self.emitters, function(e)
-        e.bullcount = 0
+        e:stop()
       end)
     end,
 

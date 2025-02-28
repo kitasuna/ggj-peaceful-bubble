@@ -1,9 +1,10 @@
 -- Requires cycler, vector2.
 
-function new_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
+function new_bullet_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
   local e = {
     pos=pos,
     vel=vel,
+    bulls = {},
     bullet_f=bullet_f,
     cycler = new_cycler(0.1, {2,4,3,5}),
     rot = 90,
@@ -69,7 +70,9 @@ function new_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
         e:fire()
       end)
     end,
-    bulls = {},
+    stop = function(e)
+      e.bullcount = 0
+    end,
   }
   -- schedule the first shot burst
   e.timer = new_timer(1.5, function()
@@ -79,28 +82,81 @@ function new_emitter(level, pos, vel, bullcount, cooldown, bullet_f)
   return e
 end
 
+function new_laser_emitter(positions, cooldown)
+  local e = {
+    cooldown = cooldown,
+    lasers = {},
+    draw = function(self)
+      for l in all(self.lasers) do
+        l:draw() 
+      end
+    end,
+    update = function(self, dt)
+      for l in all(self.lasers) do
+        l:update(dt)
+        -- clean up any lasers that have finished firing
+        if l.t > l.ttl then
+          del(self.lasers, l)
+        end
+      end
+      self.timer:update(dt)
+    end,
+    fire = function(e, idx)
+      for x_pos in all(positions[idx]) do
+        add(e.lasers, new_laser(x_pos))
+      end
+      -- schedule the next shot
+      e.timer = new_timer(e.cooldown, function()
+        local next_idx = idx == #positions
+          and 1
+          or  idx+1
+        e:fire(next_idx)
+      end)
+    end,
+    stop = function(e)
+      e.timer = new_timer(1, function() end)
+    end,
+  }
+  -- schedule the first shot
+  e.timer = new_timer(e.cooldown, function()
+    e:fire(1)
+  end)
+  return e
+end
+
 -- call this guy in a loop and pass the loop index
 function bendy(angle, idx)
   return angle + (idx^4)
 end
 
 function waves(angle, idx)
-  return angle + (15*idx)
+  return angle + (30*idx)
 end
 
 
 function emitters(level, phase)
   local es = {
     {
-      new_emitter(level, v2(64, -8), 60 * v2(0.4, 0), 1, 1),
-      new_emitter(level, v2(-8, 64), 60 * v2(0, 0.4), 1, 1.1),
+      new_bullet_emitter(level, v2(64, -8), 60 * v2(0.4, 0), 1, 1),
+      new_bullet_emitter(level, v2(-8, 64), 60 * v2(0, 0.4), 1, 1.1),
     },
     {
-      new_emitter(level, v2(64, -8), 60 * v2(-0.4, 0), 2, 0.6),
-      new_emitter(level, v2(136, 64), 60 * v2(0, 0.4), 2, 0.7),
+      new_bullet_emitter(level, v2(64, -8), 60 * v2(-0.4, 0), 2, 0.6),
+      new_bullet_emitter(level, v2(136, 64), 60 * v2(0, 0.4), 2, 0.7),
     },
     {
-      new_emitter(level, v2(130, 64), 60 * v2(0, 0), 10, 0.4, bendy),
+      new_bullet_emitter(level, v2(130, 64), v_zero, 10, 0.4, bendy),
+    },
+    {
+      new_laser_emitter({
+        {4, 124},
+        {28},
+        {76},
+        {52},
+        {100},
+      }, 3),
+      new_bullet_emitter(level, v2(130, 64), v_zero, 5, 0.7, waves),
+      new_bullet_emitter(level, v2(-8, 64), v_zero, 5, 0.7, waves),
     },
   }
   return es[phase]

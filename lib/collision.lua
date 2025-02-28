@@ -49,6 +49,8 @@ function box_collider(p,w,h)
 	return collider(p,w,h,0)
 end
 
+null_collider = collider(v_zero,-10,-10,0)
+
 
 -- has collider hero, has collider bullets[]
 function collision(hero, bullets)
