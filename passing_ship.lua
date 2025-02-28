@@ -33,6 +33,7 @@ end
 do
 
 local ship_base = anim.const(draw_spr(198,0,0,2,2))
+  :map(draw_with_outline(0))
 
 local ship_flame = anim.from_frames({230,246})
   :map(function(s)
