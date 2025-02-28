@@ -88,7 +88,7 @@ function passing_ship()
       -- wait before entering
       anim.linear
         :map(const(p0))
-        :scale(0.5)
+        :scale(1)
         :thru(ship_anim({ contrails = skip_draw, flame = skip_draw})),
       -- ship enters screen quickly
       anim.linear
