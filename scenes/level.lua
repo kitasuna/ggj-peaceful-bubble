@@ -35,7 +35,7 @@ function level(nxt)
         self.items = { items(self.phase) }
       end)
 
-      self:add_timer(1, function()
+      self:add_timer(2, function()
         self.emitters = emitters(self, self.phase)
       end)
     end,

@@ -18,8 +18,8 @@ function contrails_anim(pos)
     local p1,p2,p3,p4 =
       pos.at(t),
       pos.at(t-2/60) or pos.at(t),
-      pos.at(t-4/60) or pos.at(t),
-      pos.at(t-12/60) or pos.at(t)
+      pos.at(t-6/60) or pos.at(t),
+      pos.at(t-18/60) or pos.at(t)
     line(p1.x, p1.y, p2.x, p2.y, 2)
     fillp(▤)
     line(p2.x, p2.y, p3.x, p3.y, 2)
@@ -50,48 +50,72 @@ local function ship_contrails(pos)
   :map(draw_seq)
 end
 
-local function ship_anim(opts)
-  local keep_draw = id
-  local skip_draw = const(function() end)
+local keep_draw = anim.const(id, 32000)
+local skip_draw = anim.const(function() end, 32000)
+local flicker   = anim.create(function(t)
+  return function(draw)
+    if (t*60) % 1 > 0.5 then
+      draw()
+    end
+  end
+end)
 
+local function ship_anim(opts)
   return function(pos)
     return anim.from_tbl({
       -- ship sprite
       ship_base:apply(pos:map(draw_with_offset)),
       -- engine flame
       ship_flame:apply(pos:map(draw_with_offset))
-        :map(opts.flame and keep_draw or skip_draw),
+        :apply(opts.flame),
       -- contrails
       ship_contrails(pos)
-        :map(opts.contrails and keep_draw or skip_draw),
+        :apply(opts.contrails),
     }):map(draw_seq)
   end
 end
 
 function passing_ship()
+  local p0 = v2(40,150)
+  local p1 = v2(40,60)
+  local p2 = v2(40,56)
+  local p3 = v2(40,50)
+  local p4 = v2(40,42)
+  local p5 = v2(40,-50)
+
   return obj_from_anim(
     anim.concat({
       -- wait before entering
       anim.linear
-        :map(lerp(v2(40,150), v2(40,150)))
+        :map(const(p0))
         :scale(0.5)
-        :thru(ship_anim({ contrails = false, flame = false})),
+        :thru(ship_anim({ contrails = skip_draw, flame = skip_draw})),
       -- ship enters screen quickly
       anim.linear
-        :map(function(t) return t*t end)
-        :map(lerp(v2(40,150), v2(40,60)))
+        :map(function(t) return sine_ease(0,1,t) end)
+        :map(lerp(p0,p1))
         :scale(1.5)
-        :thru(ship_anim({ contrails = true, flame = true})),
+        :thru(ship_anim({ contrails = keep_draw, flame = keep_draw})),
       -- waits
       anim.linear
-        :map(lerp(v2(40,60), v2(40,50)))
+        :map(lerp(p1,p2))
+        :scale(0.5)
+        :thru(ship_anim({ contrails = skip_draw, flame = keep_draw})),
+      -- waits
+      anim.linear
+        :map(lerp(p2,p3))
         :scale(1)
-        :thru(ship_anim({ contrails = false, flame = true})),
+        :thru(ship_anim({ contrails = skip_draw, flame = skip_draw})),
+      -- try to restart engine
+      anim.linear
+        :map(lerp(p3,p4))
+        :scale(1.5)
+        :thru(ship_anim({ contrails = skip_draw, flame = flicker})),
       -- then drifts away slow
       anim.linear
-        :map(lerp(v2(40,50), v2(40,-50)))
-        :scale(6)
-        :thru(ship_anim({ contrails = false, flame = false})),
+        :map(lerp(p4,p5))
+        :scale(7)
+        :thru(ship_anim({ contrails = skip_draw, flame = skip_draw})),
     })
   )
 end
