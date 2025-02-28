@@ -105,6 +105,7 @@ function new_laser_emitter(positions, cooldown)
       for x_pos in all(positions[idx]) do
         add(e.lasers, new_laser(x_pos))
       end
+      sfx_controller:play_sound("alarm")
       -- schedule the next shot
       e.timer = new_timer(e.cooldown, function()
         local next_idx = idx == #positions
@@ -154,7 +155,7 @@ function emitters(level, phase)
         {76},
         {52},
         {100},
-      }, 3),
+      }, 4),
       new_bullet_emitter(level, v2(130, 64), v_zero, 5, 0.7, waves),
       new_bullet_emitter(level, v2(-8, 64), v_zero, 5, 0.7, waves),
     },

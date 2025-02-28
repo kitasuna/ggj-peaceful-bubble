@@ -13,7 +13,8 @@ end
 
 draw_warning = function()
   fillp(0x36c9.8)
-  rectfill(-3,0,3,128,4)
+  rectfill(-4,0,4,128,4)
+  draw_with_outline(4)(draw_spr(15,-3,12))()
   fillp()
 end
 
