@@ -54,11 +54,11 @@ end
 local keep_draw = anim.const(id, 32000)
 local skip_draw = anim.const(function() end, 32000)
 local flicker   = anim.create(function(t)
-  return function(draw)
-    if (t*60) % 1 > 0.5 then
+  return suspend(function(draw)
+    if ceil(60*t) % 4 <= 1 then
       draw()
     end
-  end
+  end)
 end)
 
 local function ship_anim(opts)

@@ -30,6 +30,8 @@ function merge(t0, t1)
 	return t2
 end
 
+function noop() end
+
 function id(x)
   return x
 end
