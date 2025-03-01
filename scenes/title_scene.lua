@@ -23,7 +23,6 @@ function title_scene(nxt)
       return nil
     end,
     draw = function(self)
-
       cls()
 
       self.cloud_map:draw()
@@ -37,9 +36,10 @@ function title_scene(nxt)
 
       self.bubble:draw()
 
+      print("press ❎ to come",34,101,7)
       print("press ❎ to come",34,100,2)
+      print("into existence",38,111,7)
       print("into existence",38,110,2)
-
     end,
   }
 end
