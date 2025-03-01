@@ -49,14 +49,6 @@ function transition_scn(cur,prv)
 end
 
 do
-	local function draw_all(tbl)
-		return function()
-			for d in all(tbl) do
-				d()
-			end
-		end
-	end
-	
 	local function bubble(x,y,r)
 		return anim.linear
 		:ease(function(t)
@@ -80,7 +72,7 @@ do
 			):delay(rnd())
 		end
 		return anim.from_list(list)
-			:map(draw_all)
+			:map(draw_seq)
 	end
 	
 	local small_bubbles  = bubble_group(8,16)
@@ -108,7 +100,7 @@ do
 			:scale(0.8)
 			:delay(1),
 	})
-	:map(draw_all)
+	:map(draw_seq)
 	
 	bubble_wipe = bubble_wipe
 		:scale(1.5/bubble_wipe.dur)
