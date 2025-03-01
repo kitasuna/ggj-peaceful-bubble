@@ -1,9 +1,15 @@
 function pal_to_tbl(f)
-	local tbl = {}
+	local ret={}
 	for i=0,15 do
-		tbl[i] = f(i)
+		ret[i] = f(i)
 	end
-	return tbl
+	return ret
+end
+
+function tbl_to_pal(tbl)
+	return function(c)
+		return tbl[c] or c
+	end
 end
 
 function draw_with_offset(v)
@@ -21,16 +27,26 @@ function draw_with_palette(p)
 		local prev = draw_pal
 		-- combine the old palette with the new one
 		draw_pal = compose(p,draw_pal)
-		pal(pal_to_tbl(draw_pal))
+		for i=0,15 do
+			pal(i,draw_pal(i))
+			palt(i,draw_pal(i) == -1 or draw_pal(i) == 0)
+		end
 		draw()
 		-- restore the old palette
+		palt()
 		draw_pal = prev
-		pal(pal_to_tbl(draw_pal))
+		for i=0,15 do
+			pal(i,draw_pal(i))
+		end
 	end)
 end
 
 function draw_with_color(c)
-	return draw_with_palette(const(c))
+	return draw_with_palette(function(col)
+		return col == 0
+			and 0
+			or c
+	end)
 end
 
 function draw_with_outline(o)
