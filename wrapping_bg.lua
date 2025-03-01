@@ -69,7 +69,7 @@ function star_background()
       )),
     -- middle clouds
     bg_layer(64,0,32)
-      :scroll(v2(-10,17))
+      :scroll(v2(-10,57))
       :effect(draw_with_palette(
         tbl_to_pal({[6]=-1, [7]=6})
       )),
