@@ -25,7 +25,7 @@ function thanks_scene(nxt)
       print("and for existing.",x,y+1,7)
       print("and for existing.",x,y,2)
 
-      print("❎ -> title", 40, 120, 7)
+      print("❎ -> title", 42, 120, 7)
     end,
   }
 end

@@ -36,10 +36,10 @@ function title_scene(nxt)
 
       self.bubble:draw()
 
-      print("press ❎ to come",34,101,7)
-      print("press ❎ to come",34,100,2)
-      print("into existence",38,111,7)
-      print("into existence",38,110,2)
+      print("press ❎ to come",33,101,7)
+      print("press ❎ to come",33,100,2)
+      print("into existence",37,111,7)
+      print("into existence",37,110,2)
     end,
   }
 end
