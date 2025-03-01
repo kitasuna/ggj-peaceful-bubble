@@ -12,16 +12,8 @@ function level(nxt)
     item_particles=nil,
     pilot = nil,
     interphase = false,
-    cloud_map=wrapping_bg(0,0,32),
-    cloud_velocities={
-      v2(0.1,0.25),
-      v2(0.25,-0.1),
-      v2(-0.5,-0.3),
-      v2(0.5,-0.3),
-      v2(0, -1)
-    },
-    star_map=wrapping_bg(32,0,32),
-    star_velocities={
+    bg = star_background(),
+    bg_velocities={
       v2(0.2,0.4),
       v2(0.4,-0.2),
       v2(-1.2,-0.8),
@@ -83,18 +75,13 @@ function level(nxt)
 
       -- self.phase can outgrow our velocities.
       if self.phase <= 1 then
-        self.cloud_map:scroll(self.cloud_velocities[self.phase])
-        self.star_map:scroll(self.star_velocities[self.phase])
-      elseif self.phase <= #self.cloud_velocities then
-        self.cloud_map:scroll(ease(self.cloud_velocities[self.phase-1],
-                                   self.cloud_velocities[self.phase],
+        self.bg:scroll(self.bg_velocities[self.phase])
+      elseif self.phase <= #self.bg_velocities then
+        self.bg:scroll(ease(self.bg_velocities[self.phase-1],
+                                   self.bg_velocities[self.phase],
                                    self.phase_t/60))
-        self.star_map:scroll(ease(self.star_velocities[self.phase-1],
-                                  self.star_velocities[self.phase],
-                                  self.phase_t/60))
       else
-        self.cloud_map:scroll(self.cloud_velocities[#self.cloud_velocities])
-        self.star_map:scroll(self.star_velocities[#self.star_velocities])
+        self.bg:scroll(self.bg_velocities[#self.bg_velocities])
       end
 
       -- update timers
@@ -191,8 +178,7 @@ function level(nxt)
 
     draw = function(self)
       cls()
-      self.cloud_map:draw()
-      self.star_map:draw()
+      self.bg:draw()
       
       self.passing_ship:draw()
 

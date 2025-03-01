@@ -19,8 +19,7 @@ function intro(nxt)
     text = bubbletext(thoughts[1], v2(10, 10)),
     bubble = floating_bubble(v2(64,64), 5, false),
     current_thought_id = 1,
-    cloud_map=wrapping_bg(0,0,32),
-    star_map=wrapping_bg(32,0,32),
+    bg = star_background(),
 
     init = function(self)
       music_controller:play_song("liftoff")
@@ -56,16 +55,14 @@ function intro(nxt)
       self.text:update()
 
       --graphics
-      self.cloud_map:scroll(v2(0.1,0.1))
-      self.star_map:scroll(v2(0.2,0.2))
+      self.bg:scroll(v2(0.2,0.2))
       self.bubble:update()
       return nil  -- continue
     end,
 
     draw = function(self)
       cls()
-      self.cloud_map:draw()
-      self.star_map:draw()      
+      self.bg:draw()
       self.bubble:draw()
       self.text:draw()
     end,

@@ -3,10 +3,7 @@
 function title_scene(nxt)
   return {
     bubble = floating_bubble(v2(64,64), 5),
-    cloud_map=wrapping_bg(0,0,32),
-    star_map=wrapping_bg(32,0,32),
-    cloud_v=v2(0.1,0.25),
-    star_v=v2(0.2,0.4),
+    bg = star_background(),
 
     init = function(self)
       music_controller:play_song("liftoff")
@@ -17,16 +14,14 @@ function title_scene(nxt)
       end
       
       self.bubble:update()
-      self.cloud_map:scroll(self.cloud_v)
-      self.star_map:scroll(self.star_v)
+      self.bg:scroll(v2(0.2,0.4))
 
       return nil
     end,
     draw = function(self)
       cls()
 
-      self.cloud_map:draw()
-      self.star_map:draw()
+      self.bg:draw()
 
       print("\14what is it like",8,13,11)
       print("\14what is it like",7,12,2)
