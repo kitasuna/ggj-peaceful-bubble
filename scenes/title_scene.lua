@@ -23,18 +23,23 @@ function title_scene(nxt)
 
       self.bg:draw()
 
-      print("\14what is it like",8,13,11)
-      print("\14what is it like",7,12,2)
-
-      print("\14to be a bubble?",6,27,11)
-      print("\14to be a bubble?",5,26,2)
+      compose(
+        draw_with_shadow(11,v2(1,1)),
+        draw_with_outline(0)
+      )(function()
+        print("\14what is it like",7,12,2)
+        print("\14to be a bubble?",5,26,2)
+      end)()
 
       self.bubble:draw()
 
-      print("press ❎ to come",33,101,7)
-      print("press ❎ to come",33,100,2)
-      print("into existence",37,111,7)
-      print("into existence",37,110,2)
+      compose(
+        draw_with_shadow(7),
+        draw_with_outline(0)
+      )(function()
+        print("press ❎ to come",33,100,2)
+        print("into existence",37,110,2)
+      end)()
     end,
   }
 end

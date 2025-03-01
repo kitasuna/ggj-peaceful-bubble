@@ -29,7 +29,9 @@ function draw_with_palette(p)
 		draw_pal = compose(p,draw_pal)
 		for i=0,15 do
 			pal(i,draw_pal(i))
-			palt(i,draw_pal(i) == -1 or draw_pal(i) == 0)
+			if i > 0 then
+				palt(i,draw_pal(i) == -1)
+			end
 		end
 		draw()
 		-- restore the old palette
@@ -51,20 +53,26 @@ end
 
 function draw_with_outline(o)
 	return suspend(function(draw)
-		-- get the current camera state
-		local x,y = peek2(0x5f28,2)
 		draw_with_color(o)(function()
 			for i=-1,1 do
 				for j=-1,1 do
 					if abs(i) + abs(j) < 2 then
-						camera(x-i,y-j)
-						draw()
+						draw_with_offset(v2(i,j))(draw)()
 					end
 				end
 			end
 		end)()
-		-- restore the camera state
-		camera(x,y)
+		draw()
+	end)
+end
+
+function draw_with_shadow(s,off)
+	off = off or v2(0,1)
+	return suspend(function(draw)
+		compose(
+			draw_with_offset(off),
+			draw_with_color(s)
+		)(draw)()
 		draw()
 	end)
 end
