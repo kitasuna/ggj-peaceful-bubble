@@ -6,7 +6,8 @@ function new_pilot(pos)
     end_pos=pos+v2(0,60),
     draw = function(self)
       -- draw ship
-      spr(198, self.pos.x-24, self.pos.y+8, 2, 2)
+      draw_with_outline(0)
+        (draw_spr(198, self.pos.x-24, self.pos.y+8, 2, 2))()
       -- draw pilot
       spr(200, self.pos.x-2, self.pos.y-self.offsets[self.current_offset]-2, 1, 1)
     end,
