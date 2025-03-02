@@ -10,8 +10,7 @@ collider_meta = {
 				max(0, abs(q.x) - c.w/2),
 				max(0, abs(q.y) - c.h/2)
 			)
-			local dist = d:dot(d)
-			return dist > 0 and dist <= c.r*c.r
+			return d:dot(d) >= 0 and d:dot(d) < c.r*c.r
 		end,
 	},
 }
@@ -34,7 +33,7 @@ function collider_diff(c1, c2)
 		p,
 		w1 + w2 + 2*r1 + 2*r2,
 		h1 + h2 + 2*r1 + 2*r2,
-		r1+r2
+		max(r1+r2,0)
 	)
 end
 
@@ -50,7 +49,7 @@ function box_collider(p,w,h)
 	return collider(p,w,h,0)
 end
 
-null_collider = collider(v_zero,-1000,-1000,0)
+null_collider = collider(v_zero,0,0,-32)
 
 empty = {
   update = noop,
