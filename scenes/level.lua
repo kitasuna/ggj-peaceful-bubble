@@ -102,19 +102,29 @@ function level(nxt)
           add(allbulls, b)
         end)
       end)
-
       local bullet_collisions = collision(self.hero, allbulls)
       if #bullet_collisions > 0 then
         foreach(self.emitters, function(e)
           del(e.bulls, bullet_collisions[1])
         end)
         self.hero:damage()
-        -- schedule a timer to end the level
-        if not self.hero.alive then
-          self:add_timer(100/60, function()
-            nxt("dead")
-          end)
-        end
+      end
+      -- check for laser collisions
+      local all_lasers = {}
+      foreach(self.emitters, function(e)
+        foreach(e.lasers, function(l)
+          add(all_lasers, l)
+        end)
+      end)
+      local laser_collisions = collision(self.hero, all_lasers)
+      if #laser_collisions > 0 then
+        self.hero:damage()
+      end
+      -- schedule a timer to end the level
+      if not self.hero.alive then
+        self:add_timer(100/60, function()
+          nxt("dead")
+        end)
       end
 
       -- check for item collisions
