@@ -42,6 +42,7 @@ poke(0x5f2e,1)
 #include sfx_controller.lua
 #include particles.lua
 #include passing_ship.lua
+#include thought.lua
 
 -- scenes
 #include scenes/title_scene.lua
