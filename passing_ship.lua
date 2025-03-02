@@ -81,7 +81,7 @@ function passing_ship()
   local p1 = v2(40,60)
   local p2 = v2(40,56)
   local p3 = v2(40,50)
-  local p4 = v2(40,42)
+  local p4 = v2(40,38)
   local p5 = v2(40,-50)
 
   return obj_from_anim(
