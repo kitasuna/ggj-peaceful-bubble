@@ -35,6 +35,8 @@ function title_scene(nxt)
 
       styled_text.caption("press ❎ to come",33,100)
       styled_text.caption("into existence",37,110)
+
+      styled_text.body2(version,112,122)
     end,
   }
 end
