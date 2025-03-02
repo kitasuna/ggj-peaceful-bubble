@@ -11,11 +11,11 @@ music_controller = {
       return
     end
     m.song_name = song_name
-    music(m.songs[song_name])
+    music(m.songs[song_name], 0, 7)
   end,
   -- stop the music
   stop = function(m)
-    music(-1)
+    music(-1, 4000, 7)
     m.song_name = nil
   end,
 }
