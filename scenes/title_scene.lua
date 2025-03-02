@@ -33,10 +33,7 @@ function title_scene(nxt)
 
       self.bubble:draw()
 
-      compose(
-        draw_with_shadow(7),
-        draw_with_outline(0)
-      )(function()
+      ui_text(function()
         print("press ❎ to come",33,100,2)
         print("into existence",37,110,2)
       end)()
