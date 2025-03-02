@@ -33,10 +33,8 @@ function title_scene(nxt)
 
       self.bubble:draw()
 
-      ui_text(function()
-        print("press ❎ to come",33,100,2)
-        print("into existence",37,110,2)
-      end)()
+      styled_text.caption("press ❎ to come",33,100)
+      styled_text.caption("into existence",37,110)
     end,
   }
 end

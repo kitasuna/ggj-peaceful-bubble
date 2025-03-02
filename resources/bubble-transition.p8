@@ -16,7 +16,6 @@ end
 
 function _draw()
 	cls()
---	print(a.dur)
 	a.at(time() - tstart)()
 end
 -->8

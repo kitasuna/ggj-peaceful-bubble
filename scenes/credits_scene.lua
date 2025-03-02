@@ -13,38 +13,32 @@ function credits_scene(nxt)
       cls()
       local x,y=3,3
 
-      print("\14credits:",x,y+1,7)
-      print("\14credits:",x,y,2)
+      styled_text.title('credits:',x,y)
       y+=16
       
-      print("douglas",x,y+1,7)
-      print("douglas",x,y,2)
+      styled_text.body1('douglas',x,y)
       y+=8
-      print("PROGRAMMING, STORY",x,y,14)
+      styled_text.body2("PROGRAMMING, STORY",x,y)
       y+=12
       
-      print("eric",x,y+1,7)
-      print("eric",x,y,2)
+      styled_text.body1('eric',x,y)
       y+=8
-      print("PROGRAMMING, LEVEL DESIGN",x,y,14)
+      styled_text.body2("PROGRAMMING, LEVEL DESIGN",x,y)
       y+=12
       
-      print("josh",x,y+1,7)
-      print("josh",x,y,2)
+      styled_text.body1("josh",x,y,2)
       y+=8
-      print("PROGRAMMING",x,y,14)
+      styled_text.body2("PROGRAMMING",x,y)
       y+=12
       
-      print("matt",x,y+1,7)
-      print("matt",x,y,2)
+      styled_text.body1("matt",x,y)
       y+=8
-      print("MUSIC, SFX, PROGRAMMING",x,y,14)
+      styled_text.body2("MUSIC, SFX, PROGRAMMING",x,y)
       y+=12
       
-      print("shane",x,y+1,7)
-      print("shane",x,y,2)
+      styled_text.body1("shane",x,y)
       y+=8
-      print("ART",x,y,14)
+      styled_text.body2("ART",x,y)
       y+=12
     end,
   }

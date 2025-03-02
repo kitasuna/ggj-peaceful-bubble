@@ -1,5 +1,29 @@
 -- Create with this function, then add update() and draw() to the respetive
 -- sections.
+
+styled_text = {
+  title = function(text,x,y)
+    styled_text.body1("\14"..text,x,y)
+  end,
+  body1 = function(text,x,y)
+    draw_with_shadow(7)
+      (function()
+        print(text,x,y,2)
+      end)()
+  end,
+  body2 = function(text,x,y)
+    print(text,x,y,14)
+  end,
+  caption = function(text,x,y)
+    compose(
+      draw_with_shadow(7),
+      draw_with_outline(0)
+    )(function()
+      print(text,x,y,2)
+    end)()
+  end,
+}
+
 function bubbletext(text, pos)
   local char_ticks=4
   return {
@@ -32,8 +56,3 @@ function bubbletext(text, pos)
     end,
   }
 end
-
-ui_text = compose(
-  draw_with_shadow(7),
-  draw_with_outline(0)
-)

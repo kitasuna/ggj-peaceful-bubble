@@ -73,9 +73,7 @@ function skip_button()
         local w = 58
         rectfill(66,116,66+w*fac,125,4)
       end
-      ui_text(function()
-        print("skip (hold ❎)",68,118,2)
-      end)()
+      styled_text.caption("skip (hold ❎)",68,118)
     end,
   }
 end

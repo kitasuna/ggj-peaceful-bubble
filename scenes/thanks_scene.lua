@@ -16,14 +16,12 @@ function thanks_scene(nxt)
       cls()
       
       local x,y=20,28
-      print("\14 thank you\nfor playing.",x,y+1,7)
-      print("\14 thank you\nfor playing.",x,y,2)
+      styled_text.title(" thank you\nfor playing.",x,y)
 
       self.bubble:draw()
 
       local x,y=32,90
-      print("and for existing.",x,y+1,7)
-      print("and for existing.",x,y,2)
+      styled_text.body1("and for existing.",x,y)
 
       print("❎ -> title", 42, 120, 7)
     end,
