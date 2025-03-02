@@ -10,7 +10,8 @@ collider_meta = {
 				max(0, abs(q.x) - c.w/2),
 				max(0, abs(q.y) - c.h/2)
 			)
-			return d:dot(d) <= c.r*c.r
+			local dist = d:dot(d)
+			return dist > 0 and dist <= c.r*c.r
 		end,
 	},
 }
@@ -49,8 +50,13 @@ function box_collider(p,w,h)
 	return collider(p,w,h,0)
 end
 
-null_collider = collider(v_zero,-10,-10,0)
+null_collider = collider(v_zero,-1000,-1000,0)
 
+empty = {
+  update = noop,
+  draw = noop,
+  collider = const(null_collider),
+}
 
 -- has collider hero, has collider bullets[]
 function collision(hero, bullets)

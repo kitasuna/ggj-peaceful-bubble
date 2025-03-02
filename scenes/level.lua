@@ -9,8 +9,8 @@ function level(nxt)
     hero = player(v2(64,64)),
     emitters = {},
     items = {},
-    item_particles=nil,
-    pilot = nil,
+    item_particles = empty,
+    pilot = empty,
     interphase = false,
     bg = star_background(),
     bg_velocities={
@@ -44,9 +44,7 @@ function level(nxt)
       
       self.passing_ship:update(dt)
       
-      if self.pilot != nil then
-        self.pilot:update(dt)
-      end
+      self.pilot:update(dt)
 
       local total_bulls = 0
       foreach(self.emitters, function(e)
@@ -55,18 +53,14 @@ function level(nxt)
       end)
 
       if total_bulls == 0 and self.interphase then
-        printh("Oh man, trigger now")
         self:cue_next_phase()
-        printh("phase: "..self.phase)
       end
 
       foreach(self.items, function(i)
         i:update(dt)
       end)
 
-      if self.item_particles != nil then
-        self.item_particles:update()
-      end
+      self.item_particles:update()
 
       -- check collisions
       if self.hero.alive then
@@ -98,6 +92,9 @@ function level(nxt)
     end,
 
     check_collisions = function(self)
+      collision(self.hero, {empty})
+
+
       -- check for bullet collisions
       local allbulls = {}
       foreach(self.emitters, function(e)
@@ -114,7 +111,7 @@ function level(nxt)
         self.hero:damage()
         -- schedule a timer to end the level
         if not self.hero.alive then
-          self:add_timer(80/60, function()
+          self:add_timer(100/60, function()
             nxt("dead")
           end)
         end
@@ -129,8 +126,11 @@ function level(nxt)
       if self.pilot != nil then
         -- check for pilot collision / end game
         local pilotgets = collision(self.hero, {self.pilot})
+        -- schedule a timer to finish the game
         if #pilotgets > 0 then
-          nxt("complete")
+          self:add_timer(15/60, function()
+            nxt("complete")
+          end)
         end
       end
     end,
@@ -179,24 +179,15 @@ function level(nxt)
     draw = function(self)
       cls()
       self.bg:draw()
-      
       self.passing_ship:draw()
-
       foreach(self.emitters, function(e)
         e:draw()
       end)
       foreach(self.items, function(i)
         i:draw()
       end)
-      if self.item_particles != nil then
-        self.item_particles:draw()
-      end
-
-      -- if pilot exists..
-      if self.pilot != nil then
-        self.pilot:draw()
-      end
-
+      self.item_particles:draw()
+      self.pilot:draw()
       self.hero:draw()
     end,
   }
